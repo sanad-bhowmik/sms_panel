@@ -77,13 +77,19 @@ $(document).on("click", ".Imgclose", function(){
 
 <script type="text/javascript">
 var pathname = window.location.href;
+//console.log(1);
+//console.log(pathname);
 var partsArray = pathname.split('/');
-var url =  partsArray[4];
+//console.log(partsArray);
+//local
+//var url =  partsArray[4];
+//server
+var url =  partsArray[3];
 //console.log(url);
 var a_s = document.querySelectorAll('li a');
 //a_s.removeClass('mm-active');
 
-//console.log(a_s);
+console.log(a_s);
  $(document).ready(function(){
 
         //console.log(1);
@@ -97,12 +103,12 @@ var a_s = document.querySelectorAll('li a');
             success:function(data)
             {   
                 if(data==1){
-                   // alert('thanks');
+                  //  alert('thanks');
                  
 
                 }
                 else{
-                //   console.log("permission: "+data+"logout");
+                   //console.log("permission: "+data+"logout");
                  window.location.href = "index.php?logout=true";
                 }
                 

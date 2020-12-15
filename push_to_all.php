@@ -22,7 +22,7 @@ include_once("include/header.php");
     <div class="row">
       <div class="col-md-12">
         <div class="main-card mb-3 card">
-          <div class="card-header">Notifications</div>
+          <div class="card-header">Push Notification</div>
           <div class="card-body">
             
 

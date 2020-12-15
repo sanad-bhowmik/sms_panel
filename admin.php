@@ -5,7 +5,6 @@ $doctors = get_count_by_sql("select count(*) from tbl_doctor where Active=1 ");
 $patients = get_count_by_sql("select count(*) from tbl_patient where 1=1 ");
 $appointment = get_count_by_sql("select count(*) from appointmentview where AppointmentDate='$today' ");
 
-//die($appointment);
 ?>
 
 <!--  Start content-->

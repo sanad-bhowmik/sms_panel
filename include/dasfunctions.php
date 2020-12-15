@@ -21,7 +21,7 @@ function check_login($user,$pass){
 
 
 	function get_count_by_sql($sql){
-		//echo $sql;
+
 		$res = mysqli_query($GLOBALS['con'],$sql);
 	$row = mysqli_fetch_array($res);
 	 return $svc_name = $row["count(*)"];
@@ -195,7 +195,7 @@ GROUP by sub_menu_name ";
 
 $res = mysqli_query($GLOBALS['con'],$sql);
 
-	//echo $sql;
+	//return $sql;
 	//die;
 	return mysqli_num_rows($res);
 

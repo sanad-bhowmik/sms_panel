@@ -223,7 +223,7 @@ include_once("include/footer.php");
                     console.log(response);
                     $.confirm({
                       title:'notice',
-                      content:response +" Reload Page ??",
+                      content:response +"Reload Page ??",
                       buttons:{
 
                         Yes:function(){
