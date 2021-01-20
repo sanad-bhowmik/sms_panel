@@ -8,56 +8,6 @@ include_once("include/header.php");
 
 ?>
 
-
-<script type="text/javascript">
-  
-    function readURL(input) {
-
-    var id = input.id;
-
-    
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-
-      reader.onload = function (e) {
-
-        if(id=="gm1"){
-          $('#g1').show();
-          $('#g1').attr('src', e.target.result);
-        }
-        else if(id=="gm2"){
-
-         $('#g2').show();
-         $('#g2').attr('src', e.target.result);
-       }
-       else if(id=="gm3"){
-
-         $('#g3').show();
-         $('#g3').attr('src', e.target.result);
-       }
-       else if(id=="gm4"){
-
-         $('#g4').show();
-         $('#g4').attr('src', e.target.result);
-       }
-       else if(id=="gi"){
-
-         $('#gip').show();
-         $('#gip').attr('src', e.target.result);
-       }
-
-
-     };
-
-     reader.readAsDataURL(input.files[0]);
-   }
- }
-
-
-
-
-</script>
-
 <div class="app-main__inner">
 
 
@@ -70,7 +20,7 @@ include_once("include/header.php");
 
 
                     <?php
-                    $sql_get_data ="select * from tbl_doctor where Active ='$status' order by DOCID DESC ";
+                    $sql_get_data ="select * from tbl_specialist where Active ='$status' order by OID DESC ";
 
                     $result = mysqli_query($GLOBALS['con'],$sql_get_data);
                     ?>
@@ -82,12 +32,7 @@ include_once("include/header.php");
                         <thead>
                           <tr>
                             <th class="text-center">Sl</th>
-                            <th class="text-center">Name</th>
-                            <th class="text-center">REG</th>
-                            <th class="text-center">Degree</th>
-                            <th class="text-center">Type</th>
-                            <th class="text-center">Mobile</th>
-                            <th class="text-center">Email</th>
+                            <th class="text-center">Specialization</th>
                             <th class="text-center">Option</th>
                         </tr>
                     </thead>
@@ -100,39 +45,23 @@ include_once("include/header.php");
                           </td>
                          
                           <td class="text-center">
-                              <?php echo $rs['DocName']; ?>
+                              <?php echo $rs['Specialization']; ?>
                           </td>
-                           <td class="text-center">
-                              <?php echo $rs['BmdcReg']; ?>
-                          </td>
-                          <td class="text-center">
-                              <?php echo $rs['DocDegree']; ?>
-                          </td>
-                           <td class="text-center">
-                              <?php echo $rs['DocType']; ?>
-                          </td>
-                          <td class="text-center">
-                              <?php echo $rs['MobileNum']; ?>
-                          </td>
-                           <td class="text-center">
-                              <?php echo $rs['Email']; ?>
-                          </td>
-                           
                            
                           
                            <td class="text-center">
                             
-                      <button id="<?php  echo $rs['DOCID']; ?>" type="button" class="btn-sm mr-2 mb-2 btn-primary doctorDetails">Details</button>
+                     
                       
                       <?php
 
                         if($status==1){
 
-                          $output ='<button id="'.$rs['DOCID'].'" type="button" class="btn-sm mr-2 mb-2 btn-warning docInActive">InActive</button> ';
+                          $output ='<button id="'.$rs['OID'].'" type="button" class="btn-sm mr-2 mb-2 btn-warning docInActive">InActive</button> ';
 
                         }else{
-                          $output='<button id="'.$rs['DOCID'].'" type="button" class="btn-sm mr-2 mb-2 btn-success docActive">Active</button> ';
-                          $output.=' <button id="'.$rs['DOCID'].'" type="button" class="btn-sm mr-2 mb-2 btn-danger docDelete">Remove</button>';
+                          $output='<button id="'.$rs['OID'].'" type="button" class="btn-sm mr-2 mb-2 btn-success docActive">Active</button> ';
+                         $output.=' <button id="'.$rs['OID'].'" type="button" class="btn-sm mr-2 mb-2 btn-danger docDelete">Remove</button>';
                         
                         }
                       
@@ -238,7 +167,7 @@ include_once("include/footer.php");
 
                 $.ajax({
 
-                  url:"delete/delete_doctor.php",
+                  url:"delete/delete_special.php",
                   method:"POST",
                   data:{pid:promotionID},
                   success:function(response){
@@ -298,7 +227,7 @@ var promotionID =$(this).attr("id");
 
           $.ajax({
 
-            url:"update/inactive_doctor.php",
+            url:"update/inactive_special.php",
             method:"POST",
             data:{pid:promotionID},
             success:function(response){
@@ -357,7 +286,7 @@ var promotionID =$(this).attr("id");
 
           $.ajax({
 
-            url:"update/active_doctor.php",
+            url:"update/active_special.php",
             method:"POST",
             data:{pid:promotionID},
             success:function(response){

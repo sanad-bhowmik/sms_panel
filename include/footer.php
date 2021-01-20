@@ -56,7 +56,7 @@ $(document).on("click", ".myImg", function(){
 // Get the image and insert it inside the modal - use its "alt" text as a caption
   $("#img01").attr("src", $(this).attr("src")); 
   $("#myImgModal").css({"display": "block"});
-console.log("hello");
+
 
  });
 
@@ -89,12 +89,12 @@ var url =  partsArray[3];
 var a_s = document.querySelectorAll('li a');
 //a_s.removeClass('mm-active');
 
-console.log(a_s);
+ //console.log(a_s);
  $(document).ready(function(){
 
         //console.log(1);
         if(url !='dashboard.php'){
-            console.log(url);
+          //  console.log(url);
             $.ajax({
             url:"get/check_url_permission.php",
             method:"POST",
@@ -109,7 +109,7 @@ console.log(a_s);
                 }
                 else{
                    //console.log("permission: "+data+"logout");
-                 window.location.href = "index.php?logout=true";
+                // window.location.href = "index.php?logout=true";
                 }
                 
 
@@ -145,11 +145,12 @@ function toastrInfoAlert(msg) {
 
 for(var i=0;i<a_s.length;i++){
 //console.log(a_s[i].getAttribute('href'));
-if (a_s[i].getAttribute('href') == url) {
+//console.log(url);
+  if (a_s[i].getAttribute('href') == url) {
        
        a_s[i].classList.add("mm-active");
-        a_s[i].parentElement.classList.add("mm-active");
-     //   console.log(a_s[i].parentElement);
+      a_s[i].parentElement.classList.add("mm-active");
+      // console.log(a_s[i].parentElement);
 
    } 
 

@@ -1,11 +1,5 @@
 <?php
-if( !isset($_GET['status']) || !is_numeric($_GET['status']) ){
-  header("Location: logout.php");
-  exit;
-}
-$status = $_GET['status'];
 include_once("include/header.php");
-
 ?>
 
 
@@ -70,7 +64,7 @@ include_once("include/header.php");
 
 
                     <?php
-                    $sql_get_data ="select * from tbl_doctor where Active ='$status' order by DOCID DESC ";
+                    $sql_get_data ="select * from tbl_patient where Active ='1' ";
 
                     $result = mysqli_query($GLOBALS['con'],$sql_get_data);
                     ?>
@@ -83,11 +77,12 @@ include_once("include/header.php");
                           <tr>
                             <th class="text-center">Sl</th>
                             <th class="text-center">Name</th>
-                            <th class="text-center">REG</th>
-                            <th class="text-center">Degree</th>
-                            <th class="text-center">Type</th>
                             <th class="text-center">Mobile</th>
+                            
                             <th class="text-center">Email</th>
+                            <th class="text-center">Address</th>
+                            <th class="text-center">Gender</th>
+                            
                             <th class="text-center">Option</th>
                         </tr>
                     </thead>
@@ -100,48 +95,27 @@ include_once("include/header.php");
                           </td>
                          
                           <td class="text-center">
-                              <?php echo $rs['DocName']; ?>
+                              <?php echo $rs['Name']; ?>
                           </td>
                            <td class="text-center">
-                              <?php echo $rs['BmdcReg']; ?>
+                              <?php echo $rs['Mobile']; ?>
                           </td>
                           <td class="text-center">
-                              <?php echo $rs['DocDegree']; ?>
-                          </td>
-                           <td class="text-center">
-                              <?php echo $rs['DocType']; ?>
-                          </td>
-                          <td class="text-center">
-                              <?php echo $rs['MobileNum']; ?>
-                          </td>
-                           <td class="text-center">
                               <?php echo $rs['Email']; ?>
                           </td>
-                           
-                           
+                          <td class="text-center">
+                              <?php echo $rs['Address']; ?>
+                          </td>
+                           <td class="text-center">
+                              <?php echo $rs['Gender']; ?>
+                          </td>
+                         
                           
                            <td class="text-center">
                             
-                      <button id="<?php  echo $rs['DOCID']; ?>" type="button" class="btn-sm mr-2 mb-2 btn-primary doctorDetails">Details</button>
-                      
-                      <?php
-
-                        if($status==1){
-
-                          $output ='<button id="'.$rs['DOCID'].'" type="button" class="btn-sm mr-2 mb-2 btn-warning docInActive">InActive</button> ';
-
-                        }else{
-                          $output='<button id="'.$rs['DOCID'].'" type="button" class="btn-sm mr-2 mb-2 btn-success docActive">Active</button> ';
-                          $output.=' <button id="'.$rs['DOCID'].'" type="button" class="btn-sm mr-2 mb-2 btn-danger docDelete">Remove</button>';
-                        
-                        }
-                      
-                          echo $output;
-                      ?>
-                       
-                       
-                      
-                     
+                      <button id="<?php  echo $rs['OID']; ?>" type="button" class="btn-sm mr-2 mb-2 btn-primary patientDetails">Details</button>
+                            
+                  <!--     <button id="<?php  echo $rs['DOCID']; ?>" type="button" class="btn-sm mr-2 mb-2 btn-danger docDelete">Remove</button> -->
 
                           </td>
 
@@ -175,13 +149,13 @@ include_once("include/footer.php");
                 </button>
             </div>
              <form id="UpdateDoctor"  method="post" enctype="multipart/form-data">
-                <div class="modal-body" id="doctor-details">
+                <div class="modal-body" id="patient-details">
 
                 </div>
                 <div class="modal-footer">
                  
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button id="saveChanges" type="submit" class="btn btn-primary">Save changes</button>
+                    <!-- <button id="saveChanges" type="submit" class="btn btn-primary">Save changes</button> -->
                 </div>
             </form>
         </div>
@@ -203,19 +177,19 @@ include_once("include/footer.php");
 
 
 //===============================details
-    $(document).on('click', '.doctorDetails', function(){
+    $(document).on('click', '.patientDetails', function(){
 
-     var doc_id = $(this).attr("id");
+     var p_id = $(this).attr("id");
    //  console.log(product_id);
 
      $.ajax({
-        url:"get/get_doctor_details_admin.php",
+        url:"get/get_patient_details_admin.php",
         method:"POST",
-        data:{doc_id:doc_id},
+        data:{p_id:p_id},
         success:function(data)
         {   
            // console.log(data);
-            $("#doctor-details").html(data);
+            $("#patient-details").html(data);
             $(".bd-example-modal-lg").modal('show');
         }
     });
@@ -284,123 +258,9 @@ include_once("include/footer.php");
 //==============end remove
 
 
-//===========start InActive
-$('.docInActive').on('click',function(){
-
-var promotionID =$(this).attr("id");
-
-//  console.log($(this).val()); 
-   $.confirm({
-  title: 'Confirm!',
-  content: 'Are you sure want to In-Active this ?? Can be Actived Later !!',
-  buttons: {
-      confirm: function () {
-
-          $.ajax({
-
-            url:"update/inactive_doctor.php",
-            method:"POST",
-            data:{pid:promotionID},
-            success:function(response){
-
-              console.log(response);
-              $.confirm({
-                title:'notice',
-                content:response +"Reload Page ??",
-                buttons:{
-
-                  Yes:function(){
-                    location.reload();
-                  },
-                  No:function(){}
-                }
-              });
-              
-            //   location.reload();
-            }
 
 
 
-
-          });
-
-
-
-          
-      },
-      cancel: function () {
-          $.alert('Canceled!');
-      }
-   
-  }
-});
-                              
-
-});
-
-
-
-
-//==============end Inactive
-
-//===========start Active
-$('.docActive').on('click',function(){
-
-var promotionID =$(this).attr("id");
-
-//  console.log($(this).val()); 
-   $.confirm({
-  title: 'Confirm!',
-  content: 'Are you sure want to Active this ?? Can be In-Actived Later !!',
-  buttons: {
-      confirm: function () {
-
-          $.ajax({
-
-            url:"update/active_doctor.php",
-            method:"POST",
-            data:{pid:promotionID},
-            success:function(response){
-
-              console.log(response);
-              $.confirm({
-                title:'notice',
-                content:response +"Reload Page ??",
-                buttons:{
-
-                  Yes:function(){
-                    location.reload();
-                  },
-                  No:function(){}
-                }
-              });
-              
-            //   location.reload();
-            }
-
-
-
-
-          });
-
-
-
-          
-      },
-      cancel: function () {
-          $.alert('Canceled!');
-      }
-   
-  }
-});
-                              
-
-});
-
-
-
-
-//==============end active
 
 
 
@@ -472,11 +332,11 @@ var promotionID =$(this).attr("id");
             {   
                 if(data==='failed'){
                  //   alert('Something went wrong');
-                  // console.log(data);
+                   console.log(data);
                  toastr.error('Something went wrong/Missing').fadeOut(6000);
                 }
                 else if(data==='error'){
-                  //console.log(data);
+                  console.log(data);
                    toastr.error('Something wrong with update').fadeOut(6000);
                 }
                 else{

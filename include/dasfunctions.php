@@ -104,11 +104,10 @@ function get_all_user_role()
 
 
 
-
 function get_all_menus_by_role_id($id){
 
 
- $sql = "SELECT DISTINCT m.menu_id,m.menu_name,m.icon_class,m.notification FROM tbl_permission p  INNER join tbl_menu m on m.menu_id = p.menu_id WHERE p.role_id='$id' and m.status =1 order by menu_id asc";
+ $sql = "SELECT DISTINCT m.menu_id,m.menu_name,m.icon_class,m.notification FROM tbl_permission p  INNER join tbl_menu m on m.menu_id = p.menu_id WHERE p.role_id='$id' and m.status =1 order by m.ordering asc";
 
 	$res = mysqli_query($GLOBALS['con'],$sql);
 
@@ -141,10 +140,28 @@ function get_all_menus(){
 	return $res;
 
 }
+
+//========== 19-01-2021
+
+function get_menu_name_by_id($id)
+{	
+
+	 $sql = "select menu_name from tbl_menu where menu_id= '$id' limit 1";
+	 
+	
+		$res = mysqli_query($GLOBALS['con'],$sql);
+	$row = mysqli_fetch_array($res);
+	 return $name = $row["menu_name"];
+}
+
+
+
+
+//============
 function get_all_sub_menus_by_menu_id($id){
 
 
- $sql = "SELECT *  FROM tbl_sub_menu sm  WHERE sm.status =1  and menu_id='$id' ";
+ $sql = "SELECT *  FROM tbl_sub_menu sm  WHERE sm.status =1  and menu_id='$id' order by  sm.ordering asc ";
 
 	$res = mysqli_query($GLOBALS['con'],$sql);
 
@@ -158,7 +175,7 @@ function get_all_sub_menus_by_menu_id_role_id($menu_id,$role_id){
  $sql = "SELECT * FROM tbl_permission p 
 inner join tbl_sub_menu sm on sm.sub_menu_id = p.sub_menu_id
 
-WHERE p.role_id ='$role_id' and p.menu_id ='$menu_id' ";
+WHERE p.role_id ='$role_id' and p.menu_id ='$menu_id' order by sm.ordering asc ";
 
 	$res = mysqli_query($GLOBALS['con'],$sql);
 
@@ -229,6 +246,54 @@ function get_fetched_doctor_details_data_by_doc_id($id){
 	return $row;
 
 }
+
+
+
+function get_fetched_patient_details_data_by_p_id($id){
+
+	$id = mysqli_real_escape_string($GLOBALS['con'],$id);
+	$sql = "SELECT p.*, pf.PFile,pf.fileName FROM `tbl_patient` p 
+	left join  tbl_patientfile pf on pf.PatientID= p.OID where p.OID='$id' limit 1 ";
+	
+	$res = mysqli_query($GLOBALS['con'],$sql);
+
+	$row = mysqli_fetch_assoc($res);
+	return $row;
+
+}
+
+function get_prescriptions_by_p_id($id){
+
+	$id = mysqli_real_escape_string($GLOBALS['con'],$id);
+	$sql = "SELECT * FROM `tbl_prescriptionfile`  p  where p.PatientID='$id'  ";
+	
+	$res = mysqli_query($GLOBALS['con'],$sql);
+
+	return $res;
+
+}
+function get_patientreports_by_p_id($id){
+
+	$id = mysqli_real_escape_string($GLOBALS['con'],$id);
+	$sql = "SELECT * FROM `tbl_patientreport`  p  where p.PatientID='$id'  ";
+	
+	$res = mysqli_query($GLOBALS['con'],$sql);
+
+	return $res;
+
+}
+function get_appointments_by_p_id($id){
+
+	$id = mysqli_real_escape_string($GLOBALS['con'],$id);
+	$sql = "SELECT * FROM `appointmentview`   ap  where ap.PatientID='$id'  ";
+	
+	$res = mysqli_query($GLOBALS['con'],$sql);
+
+	return $res;
+
+}
+
+
 
 //===================================
 function get_all_hospital()

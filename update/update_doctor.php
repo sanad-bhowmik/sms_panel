@@ -233,7 +233,9 @@ $gen_prac="";
 $docName="";
 $bmdcReg="";
 $docDegree="";
-$docPayment="";
+$docPayment=0;
+$followup_payment=0;
+$report_showing_payment =0;
 $docMobile="";
 $docPass="";
 $docAddress="";
@@ -295,6 +297,18 @@ $json_day_time = json_encode($allDaysWithTime);
       if(isset($_POST['docPayment'])){
          $docPayment = mysqli_real_escape_string($GLOBALS['con'], $_POST['docPayment']) ;
       }
+      //===07012021
+      if(isset($_POST['followup_payment'])){
+        $followup_payment = mysqli_real_escape_string($GLOBALS['con'], $_POST['followup_payment']) ;
+     }
+
+
+   
+     if(isset($_POST['report_showing_payment'])){
+      $report_showing_payment = mysqli_real_escape_string($GLOBALS['con'], $_POST['report_showing_payment']) ;
+   }
+
+      
       if(isset($_POST['docNumber'])){
          $docMobile = mysqli_real_escape_string($GLOBALS['con'], $_POST['docNumber']) ;
       }
@@ -344,7 +358,8 @@ $sql .= "set DocName='$docName' , BmdcReg = '$bmdcReg' ,JsonTime = '$json_day_ti
 $sql .= "DocAddress='$docAddress' , DocType = '$docType' ,ReasonID = '$reasons' , ";
 
 $sql .= "HospitalID='$docHospital' , SpecialArea = '$speciality' ,MobileNum = '$docMobile' , ";
-$sql .= "Password='$docPass' , Remarks = '$remarks',Payment = '$docPayment' , ";
+$sql .= "Password='$docPass' , Remarks = '$remarks',Payment = '$docPayment',
+        report_showing_payment='$report_showing_payment',followup_payment ='$followup_payment',  ";
 
 
 
@@ -377,6 +392,7 @@ $result = mysqli_query($GLOBALS['con'],$sql);
 
 if($result){
   echo $pid;
+ // echo $sql;
 }
 else{
   //echo $sql;

@@ -39,8 +39,9 @@ if($_SESSION['logged_in'] != true){
 <script src="plugin/datatables.min.js"></script>
 <script src="plugin/bootstrap4min.js"></script>
 <script src="plugin/dist/jquery-confirm.min.js"></script>
-<link href="plugin/toastr.min.css" rel="stylesheet">
+<link href="plugin/toastr.css" rel="stylesheet">
 <script src="plugin/toastr.min.js"></script>
+<script src="plugin/sum.js"></script>
 
 
 <body>

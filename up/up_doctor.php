@@ -241,7 +241,9 @@ $gen_prac="";
 $docName="";
 $bmdcReg="";
 $docDegree="";
-$docPayment="";
+$docPayment=0;
+$followup_payment=0;
+$report_showing_payment=0;
 $docMobile="";
 $docPass="";
 $docAddress="";
@@ -303,6 +305,14 @@ $json_day_time = json_encode($allDaysWithTime);
       if(isset($_POST['docPayment'])){
          $docPayment = mysqli_real_escape_string($GLOBALS['con'], $_POST['docPayment']) ;
       }
+      //===== 07012020
+      if(isset($_POST['followup_payment'])){
+        $followup_payment = mysqli_real_escape_string($GLOBALS['con'], $_POST['followup_payment']) ;
+     }
+     if(isset($_POST['report_showing_payment'])){
+      $report_showing_payment= mysqli_real_escape_string($GLOBALS['con'], $_POST['report_showing_payment']) ;
+     }
+      //=====
       if(isset($_POST['docNumber'])){
          $docMobile = mysqli_real_escape_string($GLOBALS['con'], $_POST['docNumber']) ;
       }
@@ -339,7 +349,7 @@ $json_day_time = json_encode($allDaysWithTime);
 
       $sql .= " MobileNum,Password,Remarks,Active,Status,StartDuty,EndDuty,Payment,DocImage,fileName, ";
       $sql .= " DocSignature,fileNameSignature,Gen_Prac,OtherPfID,DayOfPractice,Gender,DOB,  ";
-      $sql .= " Email,added_by,Created_at ";
+      $sql .= " Email,added_by,Created_at,followup_payment,report_showing_payment ";
 
       $sql .= " ) ";
 
@@ -349,7 +359,7 @@ $json_day_time = json_encode($allDaysWithTime);
       $sql .=" '$docHospital','$speciality','$docMobile','$docPass','$remarks','$active','$status',";
       $sql .=" '00:00:00','00:00:00','$docPayment','$filepath1','$fileName1','$filepath2','$fileName2',";
       $sql .=" '$gen_prac','$op','$dayOfPractice','$gender','$dob',";
-      $sql .=" '$email','$user_id','$date' ";
+      $sql .=" '$email','$user_id','$date','$followup_payment','$report_showing_payment' ";
       
 
       $sql .=" ) ";
@@ -361,7 +371,7 @@ $json_day_time = json_encode($allDaysWithTime);
 
                  }
                  else{
-                    echo   "Data Added failed & " .$upload_msg.'---';
+                    echo   "Data Added failed & " .$upload_msg.'---'.mysqli_error($GLOBALS['con']);
               }
      // Verify MYME type of the file
        // uniqid() .
