@@ -150,7 +150,7 @@ if(isset($_POST['doc_id'])){
   </div>
   <div class="col-sm-2">    
 
-  FollowUp Fee: <input class="form-control" value="'.$docDetails['followup_payment'].'" min="0"  type="number" name="followup_payment"  id="followup_payment">
+  <input class="form-control" value="'.$docDetails['followup_payment'].'" min="0"  type="hidden" name="followup_payment"  id="followup_payment">
 
 
 

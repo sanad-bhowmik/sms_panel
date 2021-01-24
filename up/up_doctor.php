@@ -254,7 +254,8 @@ $email="";
 $gender ="";
 $active=1;
 $status=1;
-
+//23-01-2021
+$general_payment=0;
 
 $json_day_time = json_encode($allDaysWithTime);
 
@@ -304,6 +305,7 @@ $json_day_time = json_encode($allDaysWithTime);
       }
       if(isset($_POST['docPayment'])){
          $docPayment = mysqli_real_escape_string($GLOBALS['con'], $_POST['docPayment']) ;
+         $general_payment=$docPayment;
       }
       //===== 07012020
       if(isset($_POST['followup_payment'])){
@@ -349,7 +351,7 @@ $json_day_time = json_encode($allDaysWithTime);
 
       $sql .= " MobileNum,Password,Remarks,Active,Status,StartDuty,EndDuty,Payment,DocImage,fileName, ";
       $sql .= " DocSignature,fileNameSignature,Gen_Prac,OtherPfID,DayOfPractice,Gender,DOB,  ";
-      $sql .= " Email,added_by,Created_at,followup_payment,report_showing_payment ";
+      $sql .= " Email,added_by,Created_at,followup_payment,report_showing_payment,general_payment ";
 
       $sql .= " ) ";
 
@@ -359,7 +361,7 @@ $json_day_time = json_encode($allDaysWithTime);
       $sql .=" '$docHospital','$speciality','$docMobile','$docPass','$remarks','$active','$status',";
       $sql .=" '00:00:00','00:00:00','$docPayment','$filepath1','$fileName1','$filepath2','$fileName2',";
       $sql .=" '$gen_prac','$op','$dayOfPractice','$gender','$dob',";
-      $sql .=" '$email','$user_id','$date','$followup_payment','$report_showing_payment' ";
+      $sql .=" '$email','$user_id','$date','$followup_payment','$report_showing_payment','$general_payment' ";
       
 
       $sql .=" ) ";

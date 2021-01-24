@@ -377,7 +377,7 @@ function readURL(input) {
           </div>
           <div class="col-sm-2">    
 
-        FollowUp Fee: <input class="form-control" required min="0" value="0"  type="number" name="followup_payment"  id="followup_payment">
+        <input class="form-control" required min="0" value="0"  type="hidden" name="followup_payment"  id="followup_payment">
 
 
 

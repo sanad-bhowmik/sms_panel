@@ -358,7 +358,7 @@ $sql .= "set DocName='$docName' , BmdcReg = '$bmdcReg' ,JsonTime = '$json_day_ti
 $sql .= "DocAddress='$docAddress' , DocType = '$docType' ,ReasonID = '$reasons' , ";
 
 $sql .= "HospitalID='$docHospital' , SpecialArea = '$speciality' ,MobileNum = '$docMobile' , ";
-$sql .= "Password='$docPass' , Remarks = '$remarks',Payment = '$docPayment',
+$sql .= "Password='$docPass' , Remarks = '$remarks',Payment = '$docPayment',general_payment = '$docPayment',
         report_showing_payment='$report_showing_payment',followup_payment ='$followup_payment',  ";
 
 
