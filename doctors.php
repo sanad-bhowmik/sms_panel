@@ -7,8 +7,6 @@ $status = $_GET['status'];
 include_once("include/header.php");
 
 ?>
-
-
 <script type="text/javascript">
   
     function readURL(input) {

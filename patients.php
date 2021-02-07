@@ -64,7 +64,7 @@ include_once("include/header.php");
 
 
                     <?php
-                    $sql_get_data ="select * from tbl_patient where Active ='1' ";
+                    $sql_get_data ="select * from tbl_patient where Active ='1' order by OID desc";
 
                     $result = mysqli_query($GLOBALS['con'],$sql_get_data);
                     ?>

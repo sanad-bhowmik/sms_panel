@@ -38,61 +38,38 @@ if(isset($_POST['submit'])){
 
   if(isset($_POST['txn_id']) ){
     
-  
     $condition = " txn_id like '%".$_POST['txn_id']."%'";
     array_push($param,$condition);
 
   }
 
 
-  
   $condition = implode(" and ",$param);
 
-
   
-  
-  $sql_get_data = "select * from invoiceList where  ".$condition ;
+  $sql_get_data = "select * from invoiceList where  ".$condition." order by  created_at desc" ;
   //var_dump($sql_get_data);
   //die;
   $result = mysqli_query($GLOBALS['con'], $sql_get_data);
 
 
-
-
 }// end if submit
 else{
 
-  $sql_get_data = "select * from invoiceList where 1=1 ";
+  $sql_get_data = "select * from invoiceList where 1=1 order by  created_at desc   ";
 
   $result = mysqli_query($GLOBALS['con'], $sql_get_data);
 
 }
-
-
-
-
-
-
-
-
-
 ?>
+
 <div class="app-main__inner">
-
-
 <form id="search"  action="<?php echo $_SERVER['PHP_SELF'];?>" method="post" >
   <div class="row">
     <div class="col-md-12">
       <div class="main-card mb-3 card">
         <div class="card-header">Search Invoice</div>
         <div class="card-body">
-
-
-
-
-
-        
-
           <div class="position-relative row form-group">
             
           <div class="col-sm-3">
@@ -350,13 +327,5 @@ include_once("include/footer.php");
   $('#totalQty').html("Total Recevied: "+sum2.toFixed(2));
 
   });
-
-
-
-
-
-
-
-
 
 </script>
