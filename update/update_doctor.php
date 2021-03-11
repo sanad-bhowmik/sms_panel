@@ -391,8 +391,9 @@ $sql .= "updated_at='$udate' , updated_by ='$user' where DOCID='$docId'  limit 1
 $result = mysqli_query($GLOBALS['con'],$sql);
 
 if($result){
-  echo $pid;
+ // echo $pid;
  // echo $sql;
+ echo "success";
 }
 else{
   //echo $sql;

@@ -42,7 +42,7 @@ if(isset($_POST['submit'])){
 
   
   
-  $sql_get_data = "select * from appointmentview  where  ".$condition ;
+  $sql_get_data = "select * from appointmentview  where  ".$condition."  order by AppointmentDate desc" ;
   //var_dump($sql_get_data);
   //die;
   $result = mysqli_query($GLOBALS['con'], $sql_get_data);
@@ -53,7 +53,7 @@ if(isset($_POST['submit'])){
 }// end if submit
 else{
 
-  $sql_get_data = "select * from appointmentview  where 1=1 ";
+  $sql_get_data = "select * from appointmentview  where 1=1 order by AppointmentDate desc ";
 
   $result = mysqli_query($GLOBALS['con'], $sql_get_data);
 
@@ -187,7 +187,11 @@ else{
                       <?php echo $rs['AppointmentDate']; ?>
                     </td>
                     <td class="text-center">
-                    <?php echo $rs['PatientName']; ?>
+                    <?php 
+                    
+                    echo  "<a href='#' id='".$rs['PatientID']."' class='patientDetails'>".$rs['PatientName']."</a><br>".$rs['PatientMobile']."";
+                       
+                      ?>
                     </td>
                     <td class="text-center">
                       <?php echo $rs['Status']; ?>
@@ -222,36 +226,68 @@ else{
 include_once("include/footer.php");
 ?>
 
+
 <!-- Large modal -->
 
 <div id="pModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">
-          <div id="pdt">Doctor Details</div>
-        </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form id="UpdateDoctor" method="post" enctype="multipart/form-data">
-        <div class="modal-body" id="doctor-details">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle"><div id="pdt">Details</div></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+             <form id="UpdateDoctor"  method="post" enctype="multipart/form-data">
+                <div class="modal-body" id="patient-details">
 
+                </div>
+                <div class="modal-footer">
+                 
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <!-- <button id="saveChanges" type="submit" class="btn btn-primary">Save changes</button> -->
+                </div>
+            </form>
         </div>
-        <div class="modal-footer">
-
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button id="saveChanges" type="submit" class="btn btn-primary">Save changes</button>
-        </div>
-      </form>
     </div>
-  </div>
 </div>
 
 
 <script type="text/javascript">
   $(document).ready(function() {
+
+    
+    //===============================details
+    $(document).on('click', '.patientDetails', function(){
+
+var p_id = $(this).attr("id");
+//  console.log(product_id);
+
+$.ajax({
+   url:"get/get_patient_details_admin.php",
+   method:"POST",
+   data:{p_id:p_id},
+   success:function(data)
+   {   
+      // console.log(data);
+       $("#patient-details").html(data);
+       $(".bd-example-modal-lg").modal('show');
+   }
+});
+});
+
+//=======================end
+
+
+
+
+
+
+
+
+
+
+
 
     $('#doc_name').keyup(function() {
       

@@ -8,14 +8,23 @@ if(isset($_POST['submit'])){
 
   $param = array();
   
-  if(isset($_POST['doc_id']) &&  $_POST['doc_id'] !="" &&  !empty($_POST['doc_id'])){
+ /* if(isset($_POST['doc_id']) &&  $_POST['doc_id'] !="" &&  !empty($_POST['doc_id'])){
     
     $docID = $_POST['doc_id'];
     $condition = "doctorID =".$docID;
     array_push($param,$condition);
 
   }
+*/
 
+if(isset($_POST['name'])){
+    
+  $name = $_POST['name'];
+  $condition = " (DocName like '%".$name."%' or PatientName like '%".$name."%') ";
+
+  array_push($param,$condition);
+
+}
   if(isset($_POST['status'])){
     
      
@@ -74,7 +83,7 @@ else{
             
           <div class="col-sm-3">
               <input type="text" hidden="true"  name="doc_id" class="form-control" id="doc_id">
-              <p class="text">Type Doctor Name :</p> <input autocomplete="off" type="text"  name="doc_name" class="form-control" id="doc_name" placeholder="Type Doctor Name">
+              <p class="text">Type Name :</p> <input autocomplete="off" type="text"  name="name" value="<?php if(isset($_POST['name'])) echo $_POST['name']; ?>" class="form-control"  placeholder="Type Name">
               <div class="list-group" id="show-list">
               </div>
           </div>
@@ -97,7 +106,7 @@ else{
 
           <div class="col-sm-2">
             
-            <p class="text">Status</p> 
+            <p class="text">Service</p> 
 
             <select name="status" id="status" class="form-control" >
               <option value="all">All
@@ -158,7 +167,7 @@ else{
                
                   <th class="text-center">Paid</th>
                   <th class="text-center">Received</th>
-                  <th class="text-center">Status</th>
+                  <th class="text-center">Service</th>
                   <th class="text-center">Pay Date</th>
 
                   <th class="text-center">Option</th>
@@ -173,7 +182,11 @@ else{
                       <?php echo $i; ?>
                     </td>
                     <td class="text-center">
-                      <?php echo $rs['PatientNumber']; ?>
+                    <?php 
+                    
+                    echo  "<a href='#' id='".$rs['patientID']."' class='patientDetails'>".$rs['PatientName']."</a><br>".$rs['PatientNumber']."";
+                       
+                      ?>
                     </td>
 
                     <td class="text-center">
@@ -227,34 +240,58 @@ include_once("include/footer.php");
 
 <!-- Large modal -->
 
+<!-- Large modal -->
+
 <div id="pModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">
-          <div id="pdt">Doctor Details</div>
-        </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form id="UpdateDoctor" method="post" enctype="multipart/form-data">
-        <div class="modal-body" id="doctor-details">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle"><div id="pdt">Details</div></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+             <form id="UpdateDoctor"  method="post" enctype="multipart/form-data">
+                <div class="modal-body" id="patient-details">
 
+                </div>
+                <div class="modal-footer">
+                 
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <!-- <button id="saveChanges" type="submit" class="btn btn-primary">Save changes</button> -->
+                </div>
+            </form>
         </div>
-        <div class="modal-footer">
-
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button id="saveChanges" type="submit" class="btn btn-primary">Save changes</button>
-        </div>
-      </form>
     </div>
-  </div>
 </div>
 
 
 <script type="text/javascript">
   $(document).ready(function() {
+
+
+
+
+    //===============================details
+    $(document).on('click', '.patientDetails', function(){
+
+var p_id = $(this).attr("id");
+//  console.log(product_id);
+
+$.ajax({
+   url:"get/get_patient_details_admin.php",
+   method:"POST",
+   data:{p_id:p_id},
+   success:function(data)
+   {   
+      // console.log(data);
+       $("#patient-details").html(data);
+       $(".bd-example-modal-lg").modal('show');
+   }
+});
+});
+
+//=======================end
 
     $('#doc_name').keyup(function() {
       

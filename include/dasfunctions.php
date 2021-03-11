@@ -350,6 +350,26 @@ function get_doc_specials_by_id($docID){
 
 }
 
+function get_special_details_fetched($ID){
+
+	$sql = "select * from tbl_specialist where OID='$ID' limit 1 ";
+
+	$res = mysqli_query($GLOBALS['con'],$sql);
+	$row = mysqli_fetch_array($res);
+	return $row;
+
+}
+
+function get_opf_details_fetched($ID){
+
+	$sql = "select * from tbl_otherprofessional where OID='$ID' limit 1 ";
+
+	$res = mysqli_query($GLOBALS['con'],$sql);
+	$row = mysqli_fetch_array($res);
+	return $row;
+
+}
+
 
 
 

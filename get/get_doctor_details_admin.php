@@ -273,7 +273,7 @@ if(isset($_POST['doc_id'])){
   $output .='<option value="">Start Time</option>';
   $result2 = get_times();
   while ($values=mysqli_fetch_array($result2)) {
-
+    $selected="";
    if(isset($docDayTime->Saturday)){
     $selected="";
 
@@ -281,9 +281,11 @@ if(isset($_POST['doc_id'])){
 
       $selected="selected";
     } 
-    $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
+    
 
-  };
+  }
+
+  $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
 }
 
 $output .=' </select> 
@@ -294,7 +296,7 @@ $output .=' </select>
 $output .='<option value="">End Time</option>';
 $result2 =get_times();
 while ($values=mysqli_fetch_array($result2)) {
-
+  $selected="";
  if(isset($docDayTime->Saturday)){
   $selected="";
 
@@ -302,9 +304,9 @@ while ($values=mysqli_fetch_array($result2)) {
 
     $selected="selected";
   } 
-  $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
 
 }
+$output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
 
 }
 
@@ -337,7 +339,7 @@ $output .='<input type="checkbox" '. $checked.' id="Sunday" name="sunday[day]" v
 $output .='<option value="">Start Time</option>';
 $result2 = get_times();
 while ($values=mysqli_fetch_array($result2)) {
-
+  $selected="";
   if(isset($docDayTime->Sunday)){
     $selected="";
 
@@ -345,9 +347,9 @@ while ($values=mysqli_fetch_array($result2)) {
 
       $selected="selected";
     } 
-    $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
 
   }
+  $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
 
 }
 
@@ -359,7 +361,7 @@ $output .='</select>
 $output .='<option value="">End Time</option>';
 $result2 =get_times();
 while ($values=mysqli_fetch_array($result2)) {
-
+  $selected="";
   if(isset($docDayTime->Sunday)){
     $selected="";
 
@@ -367,9 +369,10 @@ while ($values=mysqli_fetch_array($result2)) {
 
       $selected="selected";
     } 
-    $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
 
   }
+  $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
+
 }
 
 $output .=' </select>
@@ -398,6 +401,7 @@ $output .='<input '.$checked.'  type="checkbox" id="Monday" name="monday[day]" v
 $output .='<option value="">Start Time</option>';
 $result2 = get_times();
 while ($values=mysqli_fetch_array($result2)) {
+  $selected="";
   if(isset($docDayTime->Monday)){
     $selected="";
 
@@ -405,9 +409,9 @@ while ($values=mysqli_fetch_array($result2)) {
 
       $selected="selected";
     } 
-    $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
 
   }
+  $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
 
 }
 
@@ -418,7 +422,7 @@ $output .='  </select>
 $output .='<option value="">End Time</option>';
 $result2 = get_times();
 while ($values=mysqli_fetch_array($result2)) {
-
+  $selected="";
  if(isset($docDayTime->Monday)){
   $selected="";
 
@@ -426,9 +430,10 @@ while ($values=mysqli_fetch_array($result2)) {
 
     $selected="selected";
   } 
-  $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
 
 }
+$output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
+
 }
 
 $output .='  </select>
@@ -461,7 +466,7 @@ $output .='<input '.$checked.'  type="checkbox" id="Tuesday" name="tuesday[day]"
 $output .='<option value="">Start Time</option>';
 $result2 = get_times();
 while ($values=mysqli_fetch_array($result2)) {
-
+  $selected="";
   if(isset($docDayTime->Tuesday)){
     $selected="";
 
@@ -469,9 +474,11 @@ while ($values=mysqli_fetch_array($result2)) {
 
       $selected="selected";
     } 
-    $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
+   
 
   }
+
+  $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
 }
 
 $output .='  </select> 
@@ -481,6 +488,7 @@ $output .='  </select>
 $output .='<option value="">End Time</option>';
 $result2 = get_times();
 while ($values=mysqli_fetch_array($result2)) {
+  $selected="";
  if(isset($docDayTime->Tuesday)){
   $selected="";
 
@@ -488,10 +496,10 @@ while ($values=mysqli_fetch_array($result2)) {
 
     $selected="selected";
   } 
-  $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
+  
 
 }
-
+$output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
 }
 
 $output .=' </select>
@@ -520,7 +528,7 @@ $output .='<input  '.$checked.' type="checkbox" id="Wednesday" name="wednesday[d
 $output .='<option value="">Start Time</option>';
 $result2 = get_times();
 while ($values=mysqli_fetch_array($result2)) {
-
+  $selected="";
   if(isset($docDayTime->Wednesday)){
     $selected="";
 
@@ -528,10 +536,10 @@ while ($values=mysqli_fetch_array($result2)) {
 
       $selected="selected";
     } 
-    $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
+    
 
-  }
-
+  }// end if set
+  $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
 }
 
 $output .='</select> 
@@ -541,7 +549,7 @@ $output .='</select>
 $output .='<option value="">End Time</option>';
 $result2 = get_times();
 while ($values=mysqli_fetch_array($result2)) {
-
+  $selected="";
  if(isset($docDayTime->Wednesday)){
   $selected="";
 
@@ -549,9 +557,11 @@ while ($values=mysqli_fetch_array($result2)) {
 
     $selected="selected";
   } 
-  $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
+ 
 
-}
+}// end if
+$output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
+
 }
 
 $output .='</select>
@@ -579,17 +589,19 @@ $output .='<input  '.$checked.' type="checkbox" id="Thursday" name="thursday[day
 $output .='<option value="">Start Time</option>';
 $result2 = get_times();
 while ($values=mysqli_fetch_array($result2)) {
-
+  $selected="";
   if(isset($docDayTime->Thursday)){
-    $selected="";
+   
 
     if(strtotime($docDayTime->Thursday->StartTime)==strtotime($values['time'])){
 
       $selected="selected";
     } 
-    $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
+    
 
-  }
+  }// end if set
+
+  $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
   
 }
 
@@ -600,17 +612,19 @@ $output .='</select>
 $output .='<option value="">End Time</option>';
 $result2 = get_times();
 while ($values=mysqli_fetch_array($result2)) {
-
- if(isset($docDayTime->Thursday)){
   $selected="";
+ if(isset($docDayTime->Thursday)){
+  
 
   if(strtotime($docDayTime->Thursday->EndTime)==strtotime($values['time'])){
 
     $selected="selected";
   } 
-  $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
+ 
 
-}
+}//end if set
+$output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
+
 }
 
 $output .='</select>
@@ -639,17 +653,19 @@ $output .='<input  '.$checked.'  type="checkbox" id="Friday" name="friday[day]" 
 $output  .='<option value="">Start Time</option>';
 $result2 = get_times();
 while ($values=mysqli_fetch_array($result2)) {
-
- if(isset($docDayTime->Friday)){
   $selected="";
+ if(isset($docDayTime->Friday)){
+  
 
   if(strtotime($docDayTime->Friday->StartTime)==strtotime($values['time'])){
 
     $selected="selected";
   } 
-  $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
+ 
+}// end if set
 
-}
+$output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
+
 
 }
 
@@ -660,17 +676,19 @@ $output .='</select>
 $output .='<option value="">End Time</option>';
 $result2 = get_times();
 while ($values=mysqli_fetch_array($result2)) {
-
- if(isset($docDayTime->Friday)){
   $selected="";
+ if(isset($docDayTime->Friday)){
+  
 
   if(strtotime($docDayTime->Friday->EndTime)==strtotime($values['time'])){
 
     $selected="selected";
   } 
-  $output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
 
-}
+
+}// end if set
+
+$output .="<option  ".$selected." value='".$values['time']."'>".strtoupper($values['12hr_time'])."</option>";
 
 }
 
@@ -843,16 +861,6 @@ $(document).ready(function(){
 
 
 
-
-
-
-
-
-
-
-
-
-
                 </script>
                 ';
 
@@ -868,5 +876,5 @@ $(document).ready(function(){
 
               }
 
-              ?>
+?>
 

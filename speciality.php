@@ -58,7 +58,7 @@ include_once("include/header.php");
                         if($status==1){
 
                           $output ='<button id="'.$rs['OID'].'" type="button" class="btn-sm mr-2 mb-2 btn-warning docInActive">InActive</button> ';
-
+                          $output.=' <button id="'.$rs['OID'].'" type="button" class="btn-sm mr-2 mb-2 btn-primary docEdit">Edit</button>';
                         }else{
                           $output='<button id="'.$rs['OID'].'" type="button" class="btn-sm mr-2 mb-2 btn-success docActive">Active</button> ';
                          $output.=' <button id="'.$rs['OID'].'" type="button" class="btn-sm mr-2 mb-2 btn-danger docDelete">Remove</button>';
@@ -95,16 +95,16 @@ include_once("include/footer.php");
 <!-- Large modal -->
 
 <div id="pModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle"><div id="pdt">Doctor Details</div></h5>
+                <h5 class="modal-title" id="exampleModalLongTitle"><div id="pdt">Details</div></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-             <form id="UpdateDoctor"  method="post" enctype="multipart/form-data">
-                <div class="modal-body" id="doctor-details">
+             <form id="UpdateContent"  method="post" enctype="multipart/form-data">
+                <div class="modal-body" id="details">
 
                 </div>
                 <div class="modal-footer">
@@ -124,27 +124,27 @@ include_once("include/footer.php");
     $(document).ready(function(){
         
      $('.bd-example-modal-lg').on('hidden.bs.modal', function () {
-        //location.reload();
+        location.reload();
      });
 
 
     });
 
 
-//===============================details
-    $(document).on('click', '.doctorDetails', function(){
+//===============================eidt
+    $(document).on('click', '.docEdit', function(){
 
      var doc_id = $(this).attr("id");
    //  console.log(product_id);
 
      $.ajax({
-        url:"get/get_doctor_details_admin.php",
+        url:"get/get_speciality_details.php",
         method:"POST",
-        data:{doc_id:doc_id},
+        data:{id:doc_id},
         success:function(data)
         {   
            // console.log(data);
-            $("#doctor-details").html(data);
+            $("#details").html(data);
             $(".bd-example-modal-lg").modal('show');
         }
     });
@@ -355,30 +355,13 @@ var promotionID =$(this).attr("id");
           });
       }*/
 
-  $('#UpdateDoctor').on('submit',function(event){
+  $('#UpdateContent').on('submit',function(event){
       event.preventDefault(); 
 
 
-    //console.log($('#pid').val());
-
-  var chkbox = $("input[type=checkbox]");
-  var count  =0;
-
-    chkbox.each(function(index){
-
-     // console.log(this);
-      if(this.checked){
-        count++;
-      }
-      
 
 
-    });
-
-
-
-
-    if($('#docid').val() == "" || count<1)  
+    if($('#oid').val() == "")  
     {  
         $.alert({
               title: 'Encountered an error!',
@@ -391,7 +374,7 @@ var promotionID =$(this).attr("id");
     else{
 
        $.ajax({
-            url:"update/update_doctor.php",
+            url:"update/update_special_details.php",
             method:"POST",
             data: new FormData(this),
             contentType:false,
@@ -417,11 +400,12 @@ var promotionID =$(this).attr("id");
 
               $.alert({
               title: 'Update was Success!',
-              content: 'Doctor data updated successfully !!',
+              content: 'Data updated successfully !!',
               type: 'Green',
               typeAnimated: true
           
             });
+              
                   //  loadProductDetailsAdmin(data);
                  // $(".bd-example-modal-lg").modal('show');
                   //  $('#pdt').html('<span >Product Details </span>');

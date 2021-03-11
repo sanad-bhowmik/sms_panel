@@ -49,7 +49,7 @@ if(isset($_POST['p_id'])){
 
   $output .='<hr><div class="row">
 
-  <div class="col-md-6">
+  <div class="col-md-6 " style="overflow-y: scroll; height:200px;">
  Reports: <ul class="list-group">';
 
  foreach($reports as $report){
@@ -64,7 +64,7 @@ $output .= ' <li class="list-group-item "><a  target="_blank" href="'.$report['R
  
  $output .='</ul>
   </div>
-  <div class="col-md-6">
+  <div class="col-md-6" style="overflow-y: scroll; height:200px;">
  Prescriptions: <ul class="list-group">';
 
  foreach($prescriptions as $prescription){
@@ -87,7 +87,7 @@ $output .= ' <li class="list-group-item "><a  target="_blank" href="'.$prescript
 
   $output .='<hr><div class="row">
 
-  <div class="col-md-12">
+  <div class="col-md-12" style="overflow-y: scroll; height:200px;">
   <div class="table-responsive">
   <table id="DocTable" class="align-middle mb-0 table table-borderless table-striped table-hover">
     <thead>

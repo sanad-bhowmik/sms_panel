@@ -474,7 +474,7 @@ var promotionID =$(this).attr("id");
                  toastr.error('Something went wrong/Missing').fadeOut(6000);
                 }
                 else if(data==='error'){
-                  //console.log(data);
+                 // console.log(data);
                    toastr.error('Something wrong with update').fadeOut(6000);
                 }
                 else{
