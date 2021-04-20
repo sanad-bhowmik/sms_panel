@@ -236,6 +236,7 @@ $docDegree="";
 $docPayment=0;
 $followup_payment=0;
 $report_showing_payment =0;
+$counseling_payment=0;
 $docMobile="";
 $docPass="";
 $docAddress="";
@@ -258,7 +259,9 @@ $json_day_time = json_encode($allDaysWithTime);
       $date = date("Y-m-d H:i:s");
 
       if(isset($_POST['docHospital'])){
-        $docHospital = $_POST['docHospital'];
+
+        $docHospital = mysqli_real_escape_string($GLOBALS['con'], $_POST['docHospital']) ;
+         
       }
       if(isset($_POST['DocType'])){
          $docType = $_POST['DocType'];
@@ -286,7 +289,7 @@ $json_day_time = json_encode($allDaysWithTime);
 
 
       if(isset($_POST['docName'])){
-        $docName = $_POST['docName'];
+        $docName =  mysqli_real_escape_string($GLOBALS['con'], $_POST['docName']);
       }
       if(isset($_POST['bmdcReg'])){
          $bmdcReg = $_POST['bmdcReg'];
@@ -301,8 +304,11 @@ $json_day_time = json_encode($allDaysWithTime);
       if(isset($_POST['followup_payment'])){
         $followup_payment = mysqli_real_escape_string($GLOBALS['con'], $_POST['followup_payment']) ;
      }
-
-
+      //4/12/2021
+      
+      if(isset($_POST['counseling_payment'])){
+        $counseling_payment = mysqli_real_escape_string($GLOBALS['con'], $_POST['counseling_payment']) ;
+     }
    
      if(isset($_POST['report_showing_payment'])){
       $report_showing_payment = mysqli_real_escape_string($GLOBALS['con'], $_POST['report_showing_payment']) ;
@@ -359,7 +365,7 @@ $sql .= "DocAddress='$docAddress' , DocType = '$docType' ,ReasonID = '$reasons' 
 
 $sql .= "HospitalID='$docHospital' , SpecialArea = '$speciality' ,MobileNum = '$docMobile' , ";
 $sql .= "Password='$docPass' , Remarks = '$remarks',Payment = '$docPayment',general_payment = '$docPayment',
-        report_showing_payment='$report_showing_payment',followup_payment ='$followup_payment',  ";
+        report_showing_payment='$report_showing_payment',followup_payment ='$followup_payment',counseling_payment='$counseling_payment', ";
 
 
 

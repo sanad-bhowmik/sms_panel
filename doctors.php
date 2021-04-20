@@ -94,7 +94,9 @@ include_once("include/header.php");
                         <tr>
 
                             <td class="text-muted text-center" >
-                              <?php echo $i; ?>
+              <input size="5" class="ordering" id="<?= $rs['DOCID'] ?>" class="form-control" type="text"  value="<?= $rs['ordering'] ?>"/>
+                          
+                <?= $rs['ordering'] ?>
                           </td>
                          
                           <td class="text-center">
@@ -518,5 +520,39 @@ var promotionID =$(this).attr("id");
       });
     } );
 
+
+
+ 
+
+$('.ordering').on('change',function(){
+
+var doc_id =$(this).attr("id");
+var value = $(this).val();
+
+console.log(value);
+if($.isNumeric( value )){
+  $.ajax({
+        url:"update/update_ordering.php",
+        method:"POST",
+        data:{doc_id:doc_id,ordering:value},
+        success:function(data)
+        {   
+           // console.log(data);
+            alert("Updated");
+        }
+    });
+}else{
+
+  alert("Enter a numeric value")
+}
+
+
+
+
+
+});
+
+     
+  
 
 </script>

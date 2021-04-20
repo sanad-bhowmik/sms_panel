@@ -337,21 +337,21 @@ function readURL(input) {
           </div>
 
           <div class="position-relative row  form-group p-t-10">
-            <div class="col-sm-2">    
+            <div class="col-sm-4">    
 
               Doctor Name:  <input class="form-control" required=""  type="text" name="docName"  id="docName">
 
 
 
             </div>
-            <div class="col-sm-2">    
+            <div class="col-sm-4">    
 
               BMDC REG:  <input class="form-control"  type="text" name="bmdcReg"  id="bmdcReg">
 
 
 
             </div>
-            <div class="col-sm-2">    
+            <div class="col-sm-4">    
 
              Doctor Degree: <input class="form-control" required=""  type="text" name="docDegree"  id="docDegree">
 
@@ -359,32 +359,45 @@ function readURL(input) {
 
 
            </div>
-           <div class="col-sm-2">    
-
-            Doctor Payment: <input class="form-control" required min="0"  type="number" name="docPayment"  id="docpayment">
-
+       
+         
 
 
-
-          </div>
-
-          <div class="col-sm-2">    
-              Report Showing Fee: <input class="form-control" required min="0" value="0"  type="number" name="report_showing_payment"  id="report_showing_payment">
+        </div>
 
 
+        <div class="position-relative row  form-group p-t-10">
+        <div class="col-sm-3">    
 
-
-          </div>
-          <div class="col-sm-2">    
-
-        <input class="form-control" required min="0" value="0"  type="hidden" name="followup_payment"  id="followup_payment">
+General Fee: <input class="form-control" required min="0"  type="number" name="docPayment"  id="docpayment">
 
 
 
 
-          </div>
+</div>
+
+<div class="col-sm-3">    
+  Report Showing Fee: <input class="form-control" required min="0" value="0"  type="number" name="report_showing_payment"  id="report_showing_payment">
 
 
+
+
+</div>
+        <div class="col-sm-3">    
+
+Follow up Fee:<input class="form-control" required min="0" value="0"  type="number" name="followup_payment"  id="followup_payment">
+
+
+  </div>
+  <div class="col-sm-3">    
+
+Counseling Fee <input class="form-control" required min="0" value="0"  type="number" name="counseling_payment"  id="counseling_payment">
+
+
+  </div>
+
+  
+        
         </div>
         
 

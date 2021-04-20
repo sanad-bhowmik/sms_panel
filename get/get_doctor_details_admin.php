@@ -110,21 +110,21 @@ if(isset($_POST['doc_id'])){
   </div>
 
   <div class="row  form-group p-t-10">
-  <div class="col-sm-2">    
+  <div class="col-sm-4">    
 
   Doctor Name:  <input class="form-control" required="" value="'.$docDetails['DocName'].'"  type="text" name="docName"  id="docName">
 
 
 
   </div>
-  <div class="col-sm-2">    
+  <div class="col-sm-4">    
 
   BMDC REG:  <input class="form-control" value="'.$docDetails['BmdcReg'].'" type="text" name="bmdcReg"  id="bmdcReg">
 
 
 
   </div>
-  <div class="col-sm-2">    
+  <div class="col-sm-4">    
 
   Doctor Degree: <input class="form-control" value="'.$docDetails['DocDegree'].'" required=""  type="text" name="docDegree"  id="docDegree">
 
@@ -132,15 +132,20 @@ if(isset($_POST['doc_id'])){
 
 
   </div>
-  <div class="col-sm-2">    
+  </div>
 
-  Doctor Payment: <input class="form-control" value="'.$docDetails['Payment'].'" min="0"  type="number" name="docPayment"  id="docpayment">
+  <div class="row  form-group p-t-10">
+  
+
+  <div class="col-sm-3">    
+
+  General: <input class="form-control" value="'.$docDetails['Payment'].'" min="0"  type="number" name="docPayment"  id="docpayment">
 
 
 
 
   </div>
-  <div class="col-sm-2">    
+  <div class="col-sm-3">    
 
   Report Show Fee: <input class="form-control" value="'.$docDetails['report_showing_payment'].'" min="0"  type="number" name="report_showing_payment"  id="report_showing_payment">
 
@@ -148,9 +153,18 @@ if(isset($_POST['doc_id'])){
 
 
   </div>
-  <div class="col-sm-2">    
+  <div class="col-sm-3">    
 
-  <input class="form-control" value="'.$docDetails['followup_payment'].'" min="0"  type="hidden" name="followup_payment"  id="followup_payment">
+ FollowUp Fee <input class="form-control" value="'.$docDetails['followup_payment'].'" min="0"  type="number" name="followup_payment"  id="followup_payment">
+
+
+
+
+  </div>
+
+  <div class="col-sm-3">    
+
+  Counseling Fee <input class="form-control" value="'.$docDetails['counseling_payment'].'" min="0"  type="number" name="counseling_payment"  id="counseling_payment">
 
 
 

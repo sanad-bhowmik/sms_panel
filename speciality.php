@@ -41,7 +41,9 @@ include_once("include/header.php");
                         <tr>
 
                             <td class="text-muted text-center" >
-                              <?php echo $i; ?>
+                            <input size="5" class="ordering" id="<?= $rs['OID'] ?>" class="form-control" type="text"  value="<?= $rs['ordering'] ?>"/>
+                          
+                          <?= $rs['ordering'] ?>
                           </td>
                          
                           <td class="text-center">
@@ -61,7 +63,7 @@ include_once("include/header.php");
                           $output.=' <button id="'.$rs['OID'].'" type="button" class="btn-sm mr-2 mb-2 btn-primary docEdit">Edit</button>';
                         }else{
                           $output='<button id="'.$rs['OID'].'" type="button" class="btn-sm mr-2 mb-2 btn-success docActive">Active</button> ';
-                         $output.=' <button id="'.$rs['OID'].'" type="button" class="btn-sm mr-2 mb-2 btn-danger docDelete">Remove</button>';
+                          $output.=' <button id="'.$rs['OID'].'" type="button" class="btn-sm mr-2 mb-2 btn-danger docDelete">Remove</button>';
                         
                         }
                       
@@ -95,7 +97,7 @@ include_once("include/footer.php");
 <!-- Large modal -->
 
 <div id="pModal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle"><div id="pdt">Details</div></h5>
@@ -432,6 +434,35 @@ var promotionID =$(this).attr("id");
 
       });
     } );
+    
+    
+    
+$('.ordering').on('change',function(){
+
+var oid =$(this).attr("id");
+var value = $(this).val();
+
+console.log(value);
+if($.isNumeric( value )){
+  $.ajax({
+        url:"update/update_special.php",
+        method:"POST",
+        data:{oid:oid,ordering:value},
+        success:function(data)
+        {   
+           // console.log(data);
+            alert("Updated");
+        }
+    });
+}else{
+
+  alert("Enter a numeric value");
+}
+
+
+
+
+});
 
 
 </script>
