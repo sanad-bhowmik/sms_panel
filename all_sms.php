@@ -10,7 +10,8 @@ if (!$connection) {
     die("Database connection failed: " . mysqli_connect_error());
 }
 
-$dataQuery = "SELECT * FROM sms";
+$dataQuery = "SELECT * FROM sms ORDER BY datetime DESC";
+
 $dataResult = mysqli_query($connection, $dataQuery);
 
 // Fetch service types from the "service" table
@@ -166,7 +167,7 @@ mysqli_close($connection);
                                 while ($row = mysqli_fetch_assoc($dataResult)) {
                                     echo "<tr>";
                                     echo "<td>" . $row['service_type'] . "</td>";
-                                    echo "<td>" . $row['keywords'] . "</td>";
+                                    echo "<td>" . $row['keyword'] . "</td>";
                                     echo "<td>" . $row['sms'] . "</td>";
                                     echo "<td>" . $row['datetime'] . "</td>";
                                     echo "<td>" . $row['status'] . "</td>";
