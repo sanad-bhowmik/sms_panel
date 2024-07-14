@@ -13,7 +13,6 @@ if ($conn->connect_error) {
 $datenn = date('Y-m-d H:i:s');
 $today = date("Y-m-d");
 
-// Get data from POST request
 $msisdn = isset($_POST['msisdn']) ? $_POST['msisdn'] : '';
 $keyword = isset($_POST['keyword']) ? $_POST['keyword'] : '';
 
@@ -24,35 +23,33 @@ fclose($ftp222);
 echo "Received data: MSISDN=$msisdn, Keyword=$keyword\n";
 
 if ($msisdn != '' && $keyword != '') {
-    // Check if the msisdn already exists in the database
     $check_stmt = $conn->prepare("SELECT id FROM subscribers WHERE number = ?");
     $check_stmt->bind_param("s", $msisdn);
     $check_stmt->execute();
     $check_stmt->store_result();
 
     if ($check_stmt->num_rows > 0) {
-        // MSISDN exists, update based on keyword
-        if ($keyword === 'STOP CNS') {
-            // Update the status to 0 and keyword for the given msisdn
+        if (in_array($keyword, ['STOP CNS', 'STOP FNS', 'STOP BNS', 'STOP LSU', 'STOP MWP'])) {
+       
             $update_stmt = $conn->prepare("UPDATE subscribers SET status = 0, keyword = ?, updated_at = NOW() WHERE number = ?");
             $update_stmt->bind_param("ss", $keyword, $msisdn);
 
             if ($update_stmt->execute()) {
-                echo "Status and keyword updated to STOP CNS for MSISDN: $msisdn\n";
+                echo "Status and keyword updated to $keyword for MSISDN: $msisdn\n";
             } else {
-                echo "Error updating status and keyword to STOP CNS: " . $update_stmt->error . "\n";
+                echo "Error updating status and keyword to $keyword: " . $update_stmt->error . "\n";
             }
 
             $update_stmt->close();
-        } elseif ($keyword === 'START CNS') {
-            // Update the status to 1 and keyword for the given msisdn
+        } elseif (in_array($keyword, ['START CNS', 'START FNS', 'START BNS', 'START LSU', 'START MWP'])) {
+     
             $update_stmt = $conn->prepare("UPDATE subscribers SET status = 1, keyword = ?, updated_at = NOW() WHERE number = ?");
             $update_stmt->bind_param("ss", $keyword, $msisdn);
 
             if ($update_stmt->execute()) {
-                echo "Status and keyword updated to START CNS for MSISDN: $msisdn\n";
+                echo "Status and keyword updated to $keyword for MSISDN: $msisdn\n";
             } else {
-                echo "Error updating status and keyword to START CNS: " . $update_stmt->error . "\n";
+                echo "Error updating status and keyword to $keyword: " . $update_stmt->error . "\n";
             }
 
             $update_stmt->close();
@@ -60,9 +57,8 @@ if ($msisdn != '' && $keyword != '') {
             echo "Invalid keyword for existing MSISDN.\n";
         }
     } else {
-        // MSISDN does not exist, insert new subscriber
         $insert_stmt = $conn->prepare("INSERT INTO subscribers (number, keyword, status, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())");
-        $status = ($keyword === 'STOP CNS') ? 0 : 1;
+        $status = (strpos($keyword, 'STOP') === 0) ? 0 : 1;
         $insert_stmt->bind_param("ssi", $msisdn, $keyword, $status);
 
         if ($insert_stmt->execute()) {
@@ -80,3 +76,4 @@ if ($msisdn != '' && $keyword != '') {
 }
 
 $conn->close();
+?>
