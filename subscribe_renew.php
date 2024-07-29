@@ -16,7 +16,7 @@ $result = $conn->query($sql);
 $subscribers = [];
 
 if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
+    while ($row = $result->fetch_assoc()) {
         $subscribers[] = $row;
     }
 } else {
