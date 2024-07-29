@@ -37,7 +37,7 @@ if ($result->num_rows > 0) {
             fwrite($ftp222, $registerMO_url . "?" . $registerMO_param . "-" . $datetime . "\n");
             fclose($ftp222);
             try {
-               $response    = HttpRequest($registerMO_url, $registerMO_param);
+                $response = HttpRequest($registerMO_url, $registerMO_param);
                 echo 200;
             } catch (Exception $e) {
                 echo 500;
@@ -69,4 +69,3 @@ function HttpRequest($url, $param)
     return $response;
 }
 ?>
-
