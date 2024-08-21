@@ -1,2 +1,9 @@
-# AdminApi"# SMSPanel" 
-# sms_panel
+# AdminApi - SMSPanel ## Overview **SMSPanel** is an administrative API designed for managing SMS communications efficiently. It provides a centralized panel for sending, receiving, and tracking SMS messages, making it ideal for businesses and developers who need a reliable SMS solution. ## Features - Send SMS messages to single or multiple recipients. - Receive incoming SMS messages. - Track the status of sent messages. - User authentication and authorization. - Detailed logging and reporting. ## Installation To set up the SMSPanel on your local machine, follow these steps: 1. **Clone the repository:** ```bash git clone https://github.com/yourusername/sms\_panel.git ``` 2. **Navigate to the project directory:** ```bash cd sms_panel ``` 3. **Install dependencies:** ```bash npm install ``` 4. **Set up environment variables:** - Create a `.env` file in the root directory. - Add the following environment variables: ``` DB_HOST=your_database_host DB_USER=your_database_user DB_PASS=your_database_password API_KEY=your_api_key ``` ## Configuration Configure the application by setting up the database and API keys in the `.env` file. Make sure to replace placeholder values with your actual credentials. ## Usage To use the SMSPanel API, follow these examples: ### Sending an SMS ```bash curl -X POST https://yourdomain.com/api/send\_sms \-H "Authorization: Bearer your_token" \-d "to=+1234567890&message=Hello World" ``` ### Receiving SMS Retrieve incoming messages by making a GET request: ```bash curl -X GET https://yourdomain.com/api/inbox \-H "Authorization: Bearer your_token" ``` ## API Endpoints ### **POST /api/send_sms** - **Description:** Sends an SMS message. - **Parameters:** - `to` (string): The recipient's phone number. - `message` (string): The message content. ### **GET /api/inbox** - **Description:** Retrieves received SMS messages. ## Contributing If you'd like to contribute to the project, please fork the repository and use a feature branch. Pull requests are warmly welcome. ## License This project is licensed under the MIT License. See the 
+𝐿
+𝐼
+𝐶
+𝐸
+𝑁
+𝑆
+𝐸
+LICENSE(LICENSE) file for more details.
