@@ -32,12 +32,12 @@ if ($result->num_rows > 0) {
         //  echo $row['sms'];
         if ($telcoid == 3 && $keyword != "" && $msisdn != "") {
             $registerMO_url = 'http://103.228.39.36/smppsend/blsmpp_test.php';
-            $registerMO_param = "?msisdn=$msisdn&message=" . urlencode($row['sms']) . "";
+            $registerMO_param = "?msisdn=$msisdn&keyword=$keyword&shortcode=$shortcode&message=" . urlencode($row['sms']) . "";
             $ftp222 = fopen("log/contentsms_" . $date . ".txt", 'a+');
             fwrite($ftp222, $registerMO_url . "?" . $registerMO_param . "-" . $datetime . "\n");
             fclose($ftp222);
             try {
-                $response = HttpRequest($registerMO_url, $registerMO_param);
+               $response    = HttpRequest($registerMO_url, $registerMO_param);
                 echo 200;
             } catch (Exception $e) {
                 echo 500;

@@ -11,19 +11,143 @@ if (!$connection) {
 }
 
 $dataQuery = "SELECT * FROM sms ORDER BY datetime DESC";
-
 $dataResult = mysqli_query($connection, $dataQuery);
 
-// Fetch service types from the "service" table
 $serviceQuery = "SELECT DISTINCT service_type FROM service";
 $serviceResult = mysqli_query($connection, $serviceQuery);
 
-// Fetch keywords from the "keywords" table
 $keywordsQuery = "SELECT DISTINCT keywords FROM service";
 $keywordsResult = mysqli_query($connection, $keywordsQuery);
 
+$telcoQuery = "SELECT DISTINCT telcoID FROM service";
+$telcoResult = mysqli_query($connection, $telcoQuery);
+
 mysqli_close($connection);
 ?>
+
+<div class="app-main__inner">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="main-card mb-3 card">
+                <div class="card-header">SMS Data</div>
+                <div class="panelDrop">
+                    <div class="dropdown">
+                        <select id="serviceTypeSelect" name="service_type">
+                            <option value="" disabled selected>Select Service</option>
+                            <?php
+                            while ($row = mysqli_fetch_assoc($serviceResult)) {
+                                echo '<option value="' . $row['service_type'] . '">' . $row['service_type'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="dropdown">
+                        <select id="keywordsSelect" name="keyword">
+                            <option value="" disabled selected>Select Keywords</option>
+                            <?php
+                            while ($row = mysqli_fetch_assoc($keywordsResult)) {
+                                echo '<option value="' . $row['keywords'] . '">' . $row['keywords'] . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="dropdown">
+                        <input type="date" id="startDate" name="startDate">
+                    </div>
+                    <div class="dropdown">
+                        <select id="telcoIDSelect" name="telcoID">
+                            <option value="" disabled selected>Select Telco</option>
+                            <option value="1">Grameen Phone</option>
+                            <option value="3">Banglalink</option>
+                        </select>
+                    </div>
+                    <button id="filterButton" class="btn btn-success button">Search</button>
+                    <button id="clearButton" class="btn btn-danger button">Clear</button>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Service Type</th>
+                                    <th>Keywords</th>
+                                    <th>SMS</th>
+                                    <th>Telco</th>
+                                    <th>Date Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <?php
+                                $index = 1; // Initialize index number
+                                while ($row = mysqli_fetch_assoc($dataResult)) {
+                                    $telcoName = ($row['telcoID'] == 1) ? "Grameen Phone" : "Banglalink";
+                                    echo "<tr data-service-type='" . $row['service_type'] . "' data-keywords='" . $row['keyword'] . "' data-datetime='" . $row['datetime'] . "' data-telco-id='" . $row['telcoID'] . "'>";
+                                    echo "<td>" . $index . "</td>"; // Display index number
+                                    echo "<td>" . $row['service_type'] . "</td>";
+                                    echo "<td>" . $row['keyword'] . "</td>";
+                                    echo "<td>" . $row['sms'] . "</td>";
+                                    echo "<td>" . $row['datetime'] . "</td>";
+                                    echo "<td>" . $telcoName . "</td>";
+                                    echo "</tr>";
+                                    $index++; // Increment index number
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#filterButton").click(function() {
+            var selectedServiceType = $("#serviceTypeSelect").val();
+            var selectedKeywords = $("#keywordsSelect").val();
+            var selectedStartDate = $("#startDate").val();
+            var selectedTelcoID = $("#telcoIDSelect").val();
+
+            $("#tableBody tr").each(function() {
+                var serviceType = $(this).data('service-type');
+                var keywords = $(this).data('keywords');
+                var datetime = $(this).data('datetime');
+                var telcoID = $(this).data('telco-id');
+
+                var matchesServiceType = selectedServiceType ? serviceType === selectedServiceType : true;
+                var matchesKeywords = selectedKeywords ? keywords === selectedKeywords : true;
+                var matchesStartDate = selectedStartDate ? datetime >= selectedStartDate : true;
+                var matchesTelcoID = selectedTelcoID ? telcoID == selectedTelcoID : true;
+
+                if (matchesServiceType && matchesKeywords && matchesStartDate && matchesTelcoID) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        $("#clearButton").click(function() {
+            $("#serviceTypeSelect").val('');
+            $("#keywordsSelect").val('');
+            $("#startDate").val('');
+            $("#telcoIDSelect").val('');
+
+            $("#tableBody tr").show();
+        });
+    });
+</script>
+
+<?php
+include_once("include/footer.php");
+?>
+
+
+
 <style>
     .dropdown {
         position: relative;
@@ -92,7 +216,7 @@ mysqli_close($connection);
     }
 
     .panelDrop {
-        margin-left: 25%;
+        margin-left: 14%;
         margin-top: 10px;
     }
 
@@ -106,121 +230,16 @@ mysqli_close($connection);
     }
 
     #serviceTypeSelect,
-    #keywordsSelect {
-        background-color: #F3FDE8;
+    #keywordsSelect,
+    #telcoIDSelect {
+        border: 1px solid darkgrey;
         padding: 8px;
-        border-radius: 3%;
+        border-radius: 6%;
     }
 
     #startDate {
+        border: 1px solid darkgrey;
         padding: 7px;
+        border-radius: 5%;
     }
 </style>
-
-<div class="app-main__inner">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="main-card mb-3 card">
-                <div class="card-header">SMS Data</div>
-                <div class="panelDrop">
-                    <div class="dropdown">
-                        <select id="serviceTypeSelect" name="service_type">
-                            <option value="" disabled selected>Select Option</option>
-                            <?php
-                            while ($row = mysqli_fetch_assoc($serviceResult)) {
-                                echo '<option value="' . $row['service_type'] . '">' . $row['service_type'] . '</option>';
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="dropdown">
-                        <select id="keywordsSelect" name="keyword">
-                            <option value="" disabled selected>Select Option</option>
-                            <?php
-                            while ($row = mysqli_fetch_assoc($keywordsResult)) {
-                                echo '<option value="' . $row['keywords'] . '">' . $row['keywords'] . '</option>';
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="dropdown">
-                        <input type="date" id="startDate" name="startDate">
-                    </div>
-
-                    <button id="filterButton" class="btn btn-primary button">Filter</button>
-                </div>
-
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Service Type</th>
-                                    <th>Keywords</th>
-                                    <th>SMS</th>
-                                    <th>Date Time</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                <?php
-                                while ($row = mysqli_fetch_assoc($dataResult)) {
-                                    echo "<tr>";
-                                    echo "<td>" . $row['service_type'] . "</td>";
-                                    echo "<td>" . $row['keyword'] . "</td>";
-                                    echo "<td>" . $row['sms'] . "</td>";
-                                    echo "<td>" . $row['datetime'] . "</td>";
-                                    echo "<td>" . $row['status'] . "</td>";
-                                    echo "</tr>";
-                                }
-                                ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $("#filterButton").click(function() {
-            var selectedServiceType = $("#serviceTypeSelect").val();
-            var selectedKeywords = $("#keywordsSelect").val();
-            var selectedStartDate = $("#startDate").val();
-
-            $.ajax({
-                type: "GET",
-                url: "filter_data.php",
-                data: {
-                    service_type: selectedServiceType,
-                    keywords: selectedKeywords,
-                    start_date: selectedStartDate
-                },
-                success: function(data) {
-                    $("#tableBody").empty();
-
-                    data.forEach(function(row) {
-                        var newRow = "<tr>" +
-                            "<td>" + row.service_type + "</td>" +
-                            "<td>" + row.keywords + "</td>" +
-                            "<td>" + row.sms + "</td>" +
-                            "<td>" + row.datetime + "</td>" +
-                            "<td>" + row.status + "</td>" +
-                            "</tr>";
-                        $("#tableBody").append(newRow);
-                    });
-                }
-            });
-        });
-    });
-</script>
-
-
-
-<?php
-include_once("include/footer.php");
-?>

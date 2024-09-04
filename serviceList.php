@@ -10,11 +10,145 @@ if (!$connection) {
     die("Database connection failed: " . mysqli_connect_error());
 }
 
-$dataQuery = "SELECT * FROM service";
-$dataResult = mysqli_query($connection, $dataQuery);
+$serviceTypesQuery = "SELECT DISTINCT service_type FROM service";
+$serviceTypesResult = mysqli_query($connection, $serviceTypesQuery);
+
+$keywordsQuery = "SELECT DISTINCT keywords FROM service";
+$keywordsResult = mysqli_query($connection, $keywordsQuery);
+
+$serviceTypeFilter = '';
+$keywordFilter = '';
+$dateFilter = '';
+
+if (isset($_GET['service_type']) && $_GET['service_type'] != '') {
+    $serviceTypeFilter = mysqli_real_escape_string($connection, $_GET['service_type']);
+}
+
+if (isset($_GET['keyword']) && $_GET['keyword'] != '') {
+    $keywordFilter = mysqli_real_escape_string($connection, $_GET['keyword']);
+}
+
+if (isset($_GET['date']) && $_GET['date'] != '') {
+    $dateFilter = mysqli_real_escape_string($connection, $_GET['date']);
+}
+
+$filterQuery = "SELECT * FROM service WHERE 1=1";
+
+if ($serviceTypeFilter != '') {
+    $filterQuery .= " AND service_type = '$serviceTypeFilter'";
+}
+
+if ($keywordFilter != '') {
+    $filterQuery .= " AND keywords = '$keywordFilter'";
+}
+
+if ($dateFilter != '') {
+    $filterQuery .= " AND DATE(created_at) = '$dateFilter'";
+}
+
+$dataResult = mysqli_query($connection, $filterQuery);
 
 mysqli_close($connection);
 ?>
+
+<div class="app-main__inner">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="main-card mb-3 card">
+                <div class="card-header">Service List</div>
+                <div class="panelDrop">
+                    <form method="GET" action="">
+                        <div class="dropdown">
+                            <label for="serviceType" style=" font-size: medium;font-weight: 600;font-family: cursive;">Service :</label>
+                            <select id="serviceType" name="service_type" style="padding: 6px;">
+                                <option value="">All</option>
+                                <?php
+                                if (mysqli_num_rows($serviceTypesResult) > 0) {
+                                    while ($row = mysqli_fetch_assoc($serviceTypesResult)) {
+                                        $selected = ($row['service_type'] == $serviceTypeFilter) ? "selected" : "";
+                                        echo "<option value='" . $row['service_type'] . "' $selected>" . $row['service_type'] . "</option>";
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="dropdown">
+                            <label for="keyword" style=" font-size: medium;font-weight: 600;font-family: cursive;">Keyword:</label>
+                            <select id="keyword" name="keyword" style="padding: 6px;">
+                                <option value="">All</option>
+                                <?php
+                                if (mysqli_num_rows($keywordsResult) > 0) {
+                                    while ($row = mysqli_fetch_assoc($keywordsResult)) {
+                                        $selected = ($row['keywords'] == $keywordFilter) ? "selected" : "";
+                                        echo "<option value='" . $row['keywords'] . "' $selected>" . $row['keywords'] . "</option>";
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="dropdown">
+                            <label for="date" style=" font-size: medium;font-weight: 600;font-family: cursive;">Date:</label>
+                            <input type="date" id="date" name="date" value="<?php echo $dateFilter; ?>" style="padding: 6px;">
+                        </div>
+                        <button type="submit" class="btn btn-success button">Search</button>
+                        <a href="<?php echo strtok($_SERVER["REQUEST_URI"], '?'); ?>" class="btn btn-danger">Clear</a>
+                    </form>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th> <!-- Index Column Header -->
+                                    <th>Service Name</th>
+                                    <th>Service Type</th>
+                                    <th>Keywords</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                if (mysqli_num_rows($dataResult) > 0) {
+                                    $index = 1; // Initialize index number
+                                    while ($row = mysqli_fetch_assoc($dataResult)) {
+                                        echo "<tr>";
+                                        echo "<td>" . $index++ . "</td>"; // Display index number and increment
+                                        echo "<td>" . $row['service_name'] . "</td>";
+                                        echo "<td>" . $row['service_type'] . "</td>";
+                                        echo "<td>" . $row['keywords'] . "</td>";
+                                        echo "<td>" . $row['created_at'] . "</td>";
+                                        echo "</tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='5'>No data found</td></tr>"; // Adjust colspan to match the number of columns
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#filterButton').click(function() {
+            var startDate = $('#startDate').val();
+            // Add filtering logic here
+        });
+    });
+</script>
+
+<?php
+include_once("include/footer.php");
+?>
+
 <style>
     .dropdown {
         position: relative;
@@ -90,7 +224,7 @@ mysqli_close($connection);
     }
 
     .panelDrop {
-        margin-left: 25%;
+        margin-left: 17%;
         margin-top: 10px;
     }
 
@@ -133,63 +267,3 @@ mysqli_close($connection);
         }
     }
 </style>
-
-<div class="app-main__inner">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="main-card mb-3 card">
-                <div class="card-header">Service List</div>
-                <div class="panelDrop">
-                    <div class="dropdown">
-                        <input type="date" id="startDate" name="startDate">
-                    </div>
-                    <button id="filterButton" class="btn btn-primary button">Filter</button>
-                </div>
-
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Service Name</th>
-                                    <th>Service Type</th>
-                                    <th>Keywords</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                if (mysqli_num_rows($dataResult) > 0) {
-                                    while ($row = mysqli_fetch_assoc($dataResult)) {
-                                        echo "<tr>";
-                                        echo "<td>" . $row['service_name'] . "</td>";
-                                        echo "<td>" . $row['service_type'] . "</td>";
-                                        echo "<td>" . $row['keywords'] . "</td>";
-                                        echo "</tr>";
-                                    }
-                                } else {
-                                    echo "<tr><td colspan='3'>No data found</td></tr>";
-                                }
-                                ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('#filterButton').click(function() {
-            var startDate = $('#startDate').val();
-            // Add filtering logic here
-        });
-    });
-</script>
-
-<?php
-include_once("include/footer.php");
-?>

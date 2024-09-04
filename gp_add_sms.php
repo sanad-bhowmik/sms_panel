@@ -14,14 +14,12 @@ if (isset($_POST['submit'])) {
     $keyword = $_POST['keywords'];
     $sms = $_POST['sms'];
 
-    // Prepare statement for inserting SMS data
-    $query = "INSERT INTO sms (service_id, service_type, keyword, sms) VALUES (?, ?, ?, ?)";
+    $query = "INSERT INTO sms (service_id, service_type, keyword, sms, telcoID) VALUES (?, ?, ?, ?, ?)";
 
     if ($stmt = mysqli_prepare($connection, $query)) {
-        // Bind parameters to the prepared statement
+        $telcoID = 1;
         mysqli_stmt_bind_param($stmt, "isss", $service_id, $service_type, $keyword, $sms);
 
-        // Get service ID based on service type and keyword
         $service_id_query = "SELECT id FROM service WHERE service_type = ? AND keywords = ?";
         if ($service_id_stmt = mysqli_prepare($connection, $service_id_query)) {
             mysqli_stmt_bind_param($service_id_stmt, "ss", $service_type, $keyword);
@@ -31,9 +29,14 @@ if (isset($_POST['submit'])) {
             mysqli_stmt_close($service_id_stmt);
         }
 
-        // Execute the prepared statement to insert SMS data
         if (mysqli_stmt_execute($stmt)) {
-            echo '<script>toastr.success("SMS added successfully!");</script>';
+            $url = "http://103.228.39.36/GP_DPDP/send_gp_sms.php?keyword=" . urlencode($keyword) . "&content=" . urlencode($sms);
+
+            echo "<script>console.log('Hit URL: " . $url . "');</script>";
+
+            $response = file_get_contents($url);
+
+            echo '<script>toastr.success("SMS added successfully");</script>';
         } else {
             echo "Error: " . mysqli_stmt_error($stmt);
         }
@@ -44,7 +47,6 @@ if (isset($_POST['submit'])) {
     }
 }
 
-// Fetch service types and keywords for dropdowns
 $serviceTypeQuery = "SELECT DISTINCT service_type FROM service";
 $keywordsQuery = "SELECT DISTINCT keywords FROM service";
 
@@ -52,7 +54,7 @@ $serviceTypeResult = mysqli_query($connection, $serviceTypeQuery);
 $keywordsResult = mysqli_query($connection, $keywordsQuery);
 
 ?>
-<!-- Main content -->
+
 <div class="app-main__inner">
     <div class="row">
         <div class="col-md-12">
@@ -120,7 +122,6 @@ $keywordsResult = mysqli_query($connection, $keywordsQuery);
         var keywordsDropdown = document.getElementById('keywords');
 
         if (serviceType) {
-            // AJAX request to fetch keywords
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "fetch_keywords.php", true);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");

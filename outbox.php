@@ -79,7 +79,7 @@ while ($row = mysqli_fetch_assoc($keywordResult)) {
                                 <label for="msisdn">Phone:</label>
                                 <input type="text" id="msisdn" name="msisdn" class="form-control" value="<?php echo htmlspecialchars($_GET['msisdn'] ?? '', ENT_QUOTES); ?>">
                             </div>
-                            <div class="col-auto"style="margin-top: 22px;">
+                            <div class="col-auto" style="margin-top: 22px;">
                                 <button type="submit" class="btn btn-primary">Filter</button>
                                 <button type="button" id="clear-filters" class="btn btn-secondary">Clear</button>
                             </div>
@@ -89,6 +89,7 @@ while ($row = mysqli_fetch_assoc($keywordResult)) {
                     <table class="table table-bordered mt-3">
                         <thead>
                             <tr>
+                                <th>#</th> <!-- Index Column Header -->
                                 <th>Phone</th>
                                 <th>Keyword</th>
                                 <th>SMS</th>
@@ -97,8 +98,11 @@ while ($row = mysqli_fetch_assoc($keywordResult)) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                            <?php
+                            $index = 1; // Initialize index number
+                            while ($row = mysqli_fetch_assoc($result)): ?>
                                 <tr>
+                                    <td><?php echo $index++; ?></td> <!-- Display index number and increment -->
                                     <td><?php echo htmlspecialchars($row['msisdn'], ENT_QUOTES); ?></td>
                                     <td><?php echo htmlspecialchars($row['keyword'], ENT_QUOTES); ?></td>
                                     <td><?php echo htmlspecialchars($row['sms'], ENT_QUOTES); ?></td>
@@ -108,6 +112,7 @@ while ($row = mysqli_fetch_assoc($keywordResult)) {
                             <?php endwhile; ?>
                         </tbody>
                     </table>
+
                 </div>
             </div>
         </div>
@@ -116,22 +121,22 @@ while ($row = mysqli_fetch_assoc($keywordResult)) {
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-$(document).ready(function() {
-    $('#filter-form').on('submit', function(event) {
-        event.preventDefault();
-        var phoneInput = $('#msisdn').val();
-        if (phoneInput && !phoneInput.startsWith('88')) {
-            $('#msisdn').val('88' + phoneInput);
-        }
-        var queryString = $(this).serialize();
-        window.location.href = '?' + queryString;
-    });
+    $(document).ready(function() {
+        $('#filter-form').on('submit', function(event) {
+            event.preventDefault();
+            var phoneInput = $('#msisdn').val();
+            if (phoneInput && !phoneInput.startsWith('88')) {
+                $('#msisdn').val('88' + phoneInput);
+            }
+            var queryString = $(this).serialize();
+            window.location.href = '?' + queryString;
+        });
 
-    $('#clear-filters').on('click', function() {
-        $('#filter-form')[0].reset();
-        window.location.href = window.location.pathname;
+        $('#clear-filters').on('click', function() {
+            $('#filter-form')[0].reset();
+            window.location.href = window.location.pathname;
+        });
     });
-});
 </script>
 
 <?php
