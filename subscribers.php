@@ -15,12 +15,14 @@ $search_number = isset($_POST['search_number']) ? $_POST['search_number'] : '';
 $search_keyword = isset($_POST['search_keyword']) ? $_POST['search_keyword'] : '';
 $search_status = isset($_POST['search_status']) ? $_POST['search_status'] : '';
 $search_date = isset($_POST['search_date']) ? $_POST['search_date'] : '';
+$search_telco = isset($_POST['search_telco']) ? $_POST['search_telco'] : '';
 
 if (isset($_POST['clear_search'])) {
     $search_number = '';
     $search_keyword = '';
     $search_status = '';
     $search_date = '';
+    $search_telco = '';
 }
 
 // Fetch distinct keywords from the subscribers table
@@ -76,6 +78,11 @@ if (!empty($search_date)) {
     $query .= " AND DATE(created_at) = '$search_date'";
 }
 
+if (!empty($search_telco)) {
+    $search_telco = mysqli_real_escape_string($connection, $search_telco);
+    $query .= " AND telcoID = '$search_telco'";
+}
+
 $query .= " ORDER BY created_at DESC";
 $query .= " LIMIT $limit OFFSET $offset";
 
@@ -104,129 +111,167 @@ if (!empty($search_date)) {
     $count_query .= " AND DATE(created_at) = '$search_date'";
 }
 
+if (!empty($search_telco)) {
+    $count_query .= " AND telcoID = '$search_telco'";
+}
+
 $count_result = mysqli_query($connection, $count_query);
 $count_row = mysqli_fetch_assoc($count_result);
 $total_records = $count_row['total'];
 $total_pages = ceil($total_records / $limit);
 ?>
 
-<div class="app-main__inner">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="main-card mb-3 card">
-                <div class="card-header">
-                    Subscribers
-                </div>
-                <div class="card-body">
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="20">
+    <title>Subscribers</title>
+</head>
 
-                    <div class="table-responsive">
-                        <form class="search-form" method="post" action="">
-                            <input type="text" name="search_number" placeholder="Search by number" value="<?php echo htmlspecialchars($search_number); ?>" style="margin-right: 2%;">
-
-                            <select name="search_keyword" style="margin-right: 2%;">
-                                <option value="">Select Keyword</option>
-                                <?php
-                                while ($row = mysqli_fetch_assoc($keyword_result)) {
-                                    $selected = ($row['keyword'] == $search_keyword) ? 'selected' : '';
-                                    echo "<option value=\"" . htmlspecialchars($row['keyword']) . "\" $selected>" . htmlspecialchars($row['keyword']) . "</option>";
-                                }
-                                ?>
-                            </select>
-
-                            <select name="search_status" style="margin-right: 2%;">
-                                <option value="">Select Status</option>
-                                <option value="1" <?php if ($search_status === '1') echo 'selected'; ?>>Active</option>
-                                <option value="0" <?php if ($search_status === '0') echo 'selected'; ?>>Inactive</option>
-                            </select>
-
-                            <input type="date" name="search_date" value="<?php echo htmlspecialchars($search_date); ?>" style="margin-right: 2%;">
-
-                            <button type="submit">Search</button>
-                            <button type="submit" name="clear_search" class="clear-btn" onclick="clearForm()">Clear</button>
-                            <!-- Active: <?php echo htmlspecialchars($active_count); ?> -->
-                        </form>
-                        <section style="margin-bottom: 13px;">
-                            <!-- Display active and inactive counts -->
-                            <div style="position: relative;display: inline-block;padding: 7px;border-radius: 10px;border: 1px solid #e4dfdf;margin-right: 2%;font-size: larger;font-family: math;">
-                                <div style="display: inline-flex; align-items: center;">
-                                    <div>
-                                        <strong>Active : <?php echo htmlspecialchars($active_count); ?></strong>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="position: relative;display: inline-block;padding: 7px;border-radius: 10px;border: 1px solid #e4dfdf;margin-right: 2%;font-size: larger;font-family: math;">
-                                <div style="display: inline-flex; align-items: center;">
-                                    <div>
-                                        <strong>Inactive : <?php echo htmlspecialchars($inactive_count); ?></strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Number</th>
-                                    <th>Keyword</th>
-                                    <th>Status</th>
-                                    <th>Created At</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $index = $offset + 1;
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                    echo "<tr>";
-                                    echo "<td>" . htmlspecialchars($index++) . "</td>";
-                                    echo "<td>" . htmlspecialchars($row['number']) . "</td>";
-                                    echo "<td>" . htmlspecialchars($row['keyword']) . "</td>";
-                                    echo "<td>" . ($row['status'] == 1 ? "Active" : "Inactive") . "</td>";
-                                    $date = new DateTime($row['created_at'], new DateTimeZone('UTC'));
-                                    $date->setTimezone(new DateTimeZone('Asia/Dhaka'));
-                                    $formattedDate = $date->format('Y-m-d g:i a');
-                                    echo "<td>" . htmlspecialchars($formattedDate) . "</td>";
-                                    echo "</tr>";
-                                }
-                                ?>
-                            </tbody>
-                        </table>
+<body>
+    <div class="app-main__inner">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="main-card mb-3 card">
+                    <div class="card-header">
+                        Subscribers
                     </div>
-                    <div class="pagination">
-                        <?php
-                        if ($total_pages > 1) {
-                            if ($page > 1) {
-                                echo "<a href='?page=1'><<</a>";
-                            }
+                    <div class="card-body">
 
-                            $ellipsis = false;
-                            for ($i = 1; $i <= $total_pages; $i++) {
-                                if ($i == $page) {
-                                    echo "<a href='?page=$i' class='active'>$i</a>";
-                                } else {
-                                    if ($i <= 2 || $i > $total_pages - 2 || abs($i - $page) <= 1) {
-                                        echo "<a href='?page=$i'>$i</a>";
-                                    } elseif (!$ellipsis) {
-                                        echo "<span>...</span>";
-                                        $ellipsis = true;
+
+                        <div class="table-responsive">
+                            <form class="search-form" method="post" action="">
+                                <input type="text" name="search_number" placeholder="Search by number" value="<?php echo htmlspecialchars($search_number); ?>" style="margin-right: 2%;">
+
+                                <select name="search_keyword" style="margin-right: 2%;">
+                                    <option value="">Select Keyword</option>
+                                    <?php
+                                    while ($row = mysqli_fetch_assoc($keyword_result)) {
+                                        $selected = ($row['keyword'] == $search_keyword) ? 'selected' : '';
+                                        echo "<option value=\"" . htmlspecialchars($row['keyword']) . "\" $selected>" . htmlspecialchars($row['keyword']) . "</option>";
+                                    }
+                                    ?>
+                                </select>
+
+                                <select name="search_status" style="margin-right: 2%;">
+                                    <option value="">Select Status</option>
+                                    <option value="1" <?php if ($search_status === '1') echo 'selected'; ?>>Active</option>
+                                    <option value="0" <?php if ($search_status === '0') echo 'selected'; ?>>Inactive</option>
+                                </select>
+                                <select name="search_telco" style="margin-right: 2%;">
+                                    <option value="">Select Telco</option>
+                                    <option value="1" <?php if ($search_telco === '1') echo 'selected'; ?>>Grameen Phone</option>
+                                    <option value="3" <?php if ($search_telco === '3') echo 'selected'; ?>>Banglalink</option>
+                                </select>
+
+                                <input type="date" name="search_date" value="<?php echo htmlspecialchars($search_date); ?>" style="margin-right: 2%;">
+
+                                <button type="submit">Search</button>
+                                <button type="submit" name="clear_search" class="clear-btn" onclick="clearForm()">Clear</button>
+                                <!-- Active: <?php echo htmlspecialchars($active_count); ?> -->
+                            </form>
+                            <section style="margin-bottom: 13px;">
+                                <!-- Display active and inactive counts -->
+                                <div style="position: relative;display: inline-block;padding: 7px;border-radius: 10px;border: 1px solid #e4dfdf;margin-right: 2%;font-size: larger;font-family: math;">
+                                    <div style="display: inline-flex; align-items: center;">
+                                        <div>
+                                            <strong>Active : <?php echo htmlspecialchars($active_count); ?></strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="position: relative;display: inline-block;padding: 7px;border-radius: 10px;border: 1px solid #e4dfdf;margin-right: 2%;font-size: larger;font-family: math;">
+                                    <div style="display: inline-flex; align-items: center;">
+                                        <div>
+                                            <strong>Inactive : <?php echo htmlspecialchars($inactive_count); ?></strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Number</th>
+                                        <th>Keyword</th>
+                                        <th>Telco</th>
+                                        <th>Status</th>
+                                        <th>Created At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $index = $offset + 1;
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        echo "<tr>";
+                                        echo "<td>" . htmlspecialchars($index++) . "</td>";
+                                        echo "<td>" . htmlspecialchars($row['number']) . "</td>";
+                                        echo "<td>" . htmlspecialchars($row['keyword']) . "</td>";
+
+                                        // Determine telco name based on telcoID
+                                        $telcoName = '';
+                                        if ($row['telcoID'] == 1) {
+                                            $telcoName = 'Grameen Phone';
+                                        } elseif ($row['telcoID'] == 3) {
+                                            $telcoName = 'Banglalink';
+                                        } else {
+                                            $telcoName = 'Unknown';
+                                        }
+
+                                        echo "<td>" . htmlspecialchars($telcoName) . "</td>";
+                                        echo "<td>" . ($row['status'] == 1 ? "Active" : "Inactive") . "</td>";
+
+                                        $date = new DateTime($row['created_at'], new DateTimeZone('UTC'));
+                                        $date->setTimezone(new DateTimeZone('Asia/Dhaka'));
+                                        $formattedDate = $date->format('Y-m-d g:i a');
+                                        echo "<td>" . htmlspecialchars($formattedDate) . "</td>";
+                                        echo "</tr>";
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div class="pagination">
+                            <?php
+                            if ($total_pages > 1) {
+                                if ($page > 1) {
+                                    echo "<a href='?page=1'><<</a>";
+                                }
+
+                                $ellipsis = false;
+                                for ($i = 1; $i <= $total_pages; $i++) {
+                                    if ($i == $page) {
+                                        echo "<a href='?page=$i' class='active'>$i</a>";
+                                    } else {
+                                        if ($i <= 2 || $i > $total_pages - 2 || abs($i - $page) <= 1) {
+                                            echo "<a href='?page=$i'>$i</a>";
+                                        } elseif (!$ellipsis) {
+                                            echo "<span>...</span>";
+                                            $ellipsis = true;
+                                        }
                                     }
                                 }
-                            }
 
-                            // Last page link
-                            if ($page < $total_pages) {
-                                echo "<a href='?page=$total_pages'>>></a>";
+                                // Last page link
+                                if ($page < $total_pages) {
+                                    echo "<a href='?page=$total_pages'>>></a>";
+                                }
                             }
-                        }
-                        ?>
+                            ?>
+                        </div>
+
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
-</div>
+</body>
+
+</html>
 
 
 

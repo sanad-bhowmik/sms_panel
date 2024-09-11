@@ -14,10 +14,12 @@ $datenn = date('Y-m-d H:i:s');
 $today = date("Y-m-d");
 
 $msisdn = isset($_REQUEST['msisdn']) ? $_REQUEST['msisdn'] : '';
-$keyword = isset($_REQUEST['keyword']) ? urldecode($_REQUEST['keyword']) : ''; // Decode the URL-encoded keyword
-$suffix = substr($keyword, -3); // Get the last three characters of the keyword
+$keyword = isset($_REQUEST['keyword']) ? urldecode($_REQUEST['keyword']) : '';
+$suffix = substr($keyword, -3);
 
-$ftp222 = fopen("log/Subscriber_HIT_" . $today . ".txt", 'a+');
+// Log the received data
+$logFilePath = "log/Subscriber_HIT_" . $today . ".txt";
+$ftp222 = fopen($logFilePath, 'a+');
 fwrite($ftp222, "msisdn=" . $msisdn . "&keyword=" . $keyword . "-date-" . $datenn . "\n");
 fclose($ftp222);
 
@@ -71,4 +73,3 @@ if ($msisdn != '' && $keyword != '') {
 }
 
 $conn->close();
-?>

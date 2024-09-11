@@ -22,7 +22,11 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = $conn->prepare("SELECT sms FROM sms WHERE keyword = ?  ORDER BY id DESC LIMIT 1");
+//$sql = $conn->prepare("SELECT sms FROM sms WHERE keyword = ?  ORDER BY id DESC LIMIT 1");
+
+$sql = $conn->prepare("SELECT sms FROM sms WHERE keyword = ? AND telcoID = 3 ORDER BY id DESC LIMIT 1");
+
+
 $sql->bind_param("s", $keyword);
 $sql->execute();
 $result = $sql->get_result();
@@ -37,7 +41,7 @@ if ($result->num_rows > 0) {
             fwrite($ftp222, $registerMO_url . "?" . $registerMO_param . "-" . $datetime . "\n");
             fclose($ftp222);
             try {
-               $response    = HttpRequest($registerMO_url, $registerMO_param);
+                $response    = HttpRequest($registerMO_url, $registerMO_param);
                 echo 200;
             } catch (Exception $e) {
                 echo 500;
@@ -68,4 +72,3 @@ function HttpRequest($url, $param)
     curl_close($ch);
     return $response;
 }
-?>

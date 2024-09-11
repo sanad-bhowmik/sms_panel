@@ -14,10 +14,12 @@ $datenn = date('Y-m-d H:i:s');
 $today = date("Y-m-d");
 
 $msisdn = isset($_REQUEST['msisdn']) ? $_REQUEST['msisdn'] : '';
-$keyword = isset($_REQUEST['keyword']) ? urldecode($_REQUEST['keyword']) : ''; // Decode the URL-encoded keyword
-$suffix = substr($keyword, -3); // Get the last three characters of the keyword
+$keyword = isset($_REQUEST['keyword']) ? urldecode($_REQUEST['keyword']) : '';
+$suffix = substr($keyword, -3);
 
-$ftp222 = fopen("log/Subscriber_HIT_" . $today . ".txt", 'a+');
+// Log the received data
+$logFilePath = "log/GP_Subscriber_HIT_" . $today . ".txt";
+$ftp222 = fopen($logFilePath, 'a+');
 fwrite($ftp222, "msisdn=" . $msisdn . "&keyword=" . $keyword . "-date-" . $datenn . "\n");
 fclose($ftp222);
 
@@ -43,7 +45,7 @@ if ($msisdn != '' && $keyword != '') {
 
     if ($update_id) {
         // Update the existing record
-        $update_stmt = $conn->prepare("UPDATE subscribers SET keyword = ?, status = ?, updated_at = NOW(), telcoID = 3 WHERE id = ?");
+        $update_stmt = $conn->prepare("UPDATE subscribers SET keyword = ?, status = ?, updated_at = NOW(), telcoID = 1 WHERE id = ?");
         $update_stmt->bind_param("sii", $keyword, $status, $update_id);
 
         if ($update_stmt->execute()) {
@@ -55,7 +57,7 @@ if ($msisdn != '' && $keyword != '') {
         $update_stmt->close();
     } else {
         // Insert a new record
-        $insert_stmt = $conn->prepare("INSERT INTO subscribers (number, keyword, status, created_at, updated_at, telcoID) VALUES (?, ?, ?, NOW(), NOW(), 3)");
+        $insert_stmt = $conn->prepare("INSERT INTO subscribers (number, keyword, status, created_at, updated_at, telcoID) VALUES (?, ?, ?, NOW(), NOW(), 1)");
         $insert_stmt->bind_param("ssi", $msisdn, $keyword, $status);
 
         if ($insert_stmt->execute()) {

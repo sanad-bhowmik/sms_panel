@@ -24,7 +24,12 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = $conn->prepare("SELECT sms FROM sms WHERE keyword = ?  ORDER BY id DESC LIMIT 1");
+
+//$sql = $conn->prepare("SELECT sms FROM sms WHERE keyword = ?  ORDER BY id DESC LIMIT 1");
+
+$sql = $conn->prepare("SELECT sms FROM sms WHERE keyword = ? AND telcoID = 1 ORDER BY id DESC LIMIT 1");
+
+
 $sql->bind_param("s", $keyword);
 $sql->execute();
 $result = $sql->get_result();

@@ -78,7 +78,6 @@ if (isset($_GET['logout']) && $_GET['logout'] == true) {
 					<input class="input100" type="text" name="username" placeholder="username ">
 					<span class="focus-input100"></span>
 				</div>
-
 				<div class="wrap-input100 validate-input m-b-25" data-validate="Enter password">
 					<input class="input100" type="password" name="pass" placeholder="password">
 					<span class="focus-input100"></span>
