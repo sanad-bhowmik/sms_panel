@@ -14,31 +14,48 @@ if (isset($_POST['submit'])) {
     $keyword = $_POST['keywords'];
     $sms = $_POST['sms'];
 
-    $query = "INSERT INTO sms (service_id, service_type, keyword, sms, telcoID) VALUES (?, ?, ?, ?, ?)";
+    // Prepare query to get 'service_id'
+    $service_id_query = "SELECT id FROM service WHERE service_type = ? AND keywords = ?";
+    if ($service_id_stmt = mysqli_prepare($connection, $service_id_query)) {
+        mysqli_stmt_bind_param($service_id_stmt, "ss", $service_type, $keyword);
+        mysqli_stmt_execute($service_id_stmt);
+        mysqli_stmt_bind_result($service_id_stmt, $service_id);
+        mysqli_stmt_fetch($service_id_stmt);
+        mysqli_stmt_close($service_id_stmt);
+    }
 
+    // Prepare query to insert data into 'sms' table
+    $query = "INSERT INTO sms (service_id, service_type, keyword, sms, telcoID) VALUES (?, ?, ?, ?, ?)";
     if ($stmt = mysqli_prepare($connection, $query)) {
         $telcoID = 1;
-        mysqli_stmt_bind_param($stmt, "isss", $service_id, $service_type, $keyword, $sms);
 
-        $service_id_query = "SELECT id FROM service WHERE service_type = ? AND keywords = ?";
-        if ($service_id_stmt = mysqli_prepare($connection, $service_id_query)) {
-            mysqli_stmt_bind_param($service_id_stmt, "ss", $service_type, $keyword);
-            mysqli_stmt_execute($service_id_stmt);
-            mysqli_stmt_bind_result($service_id_stmt, $service_id);
-            mysqli_stmt_fetch($service_id_stmt);
-            mysqli_stmt_close($service_id_stmt);
-        }
+        // Bind parameters for the 'sms' table insert
+        mysqli_stmt_bind_param($stmt, "isssi", $service_id, $service_type, $keyword, $sms, $telcoID);
 
-        if (mysqli_stmt_execute($stmt)) {
-            $url = "http://103.228.39.36/GP_DPDP/send_gp_sms.php?keyword=" . urlencode($keyword) . "&content=" . urlencode($sms);
+        // Make the HTTP request
+        $url = "http://103.228.39.36/GP_DPDP/send_gp_sms.php?keyword=" . urlencode($keyword) . "&content=" . urlencode($sms);
+        $response = file_get_contents($url);
 
-            echo "<script>console.log('Hit URL: " . $url . "');</script>";
+        if ($response !== false && strpos($http_response_header[0], '200') !== false) {
+            // Response code is 200, insert data into the database
+            if (mysqli_stmt_execute($stmt)) {
+                $logFile = "C:\\xampp\\htdocs\\smsPanel\\log\\GP_Add_sms__log.txt";
+                $datetime = date('Y-m-d H:i:s');
+                $logContent = "URL: " . $url . " - DateTime: " . $datetime . "\n";
+                file_put_contents($logFile, $logContent, FILE_APPEND);
 
-            $response = file_get_contents($url);
-
-            echo '<script>toastr.success("SMS added successfully");</script>';
+                echo '<script>toastr.success("SMS added successfully");</script>';
+            } else {
+                echo "Error: " . mysqli_stmt_error($stmt);
+            }
         } else {
-            echo "Error: " . mysqli_stmt_error($stmt);
+            // Response code is not 200, log the error and show error toastr
+            $logFile = "C:\\xampp\\htdocs\\smsPanel\\log\\GP_sms_error_log.txt";
+            $datetime = date('Y-m-d H:i:s');
+            $logContent = "URL: " . $url . " - DateTime: " . $datetime . " - Error: Response code was not 200\n";
+            file_put_contents($logFile, $logContent, FILE_APPEND);
+
+            echo '<script>toastr.error("Unsuccessfull! to Add sms");</script>';
         }
 
         mysqli_stmt_close($stmt);
@@ -60,7 +77,7 @@ $keywordsResult = mysqli_query($connection, $keywordsQuery);
         <div class="col-md-12">
             <div class="main-card mb-3 card">
                 <div class="card-header">Add GP SMS</div>
-                <div class="card-body" style="background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Grameenphone_Logo_GP_Logo.svg/800px-Grameenphone_Logo_GP_Logo.svg.png);background-repeat: no-repeat;">
+                <div class="card-body" >
                     <form id="uploadForm" action="" method="post">
                         <div class="position-relative column form-group p-t-10">
                             <div class="col-sm-4" style="margin-bottom: 2%">
@@ -73,7 +90,6 @@ $keywordsResult = mysqli_query($connection, $keywordsQuery);
                                     }
                                     ?>
                                 </select>
-
                             </div>
 
                             <div class="col-sm-4" style="margin-bottom: 2%">

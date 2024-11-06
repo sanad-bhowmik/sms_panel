@@ -13,63 +13,69 @@ if ($conn->connect_error) {
 $datenn = date('Y-m-d H:i:s');
 $today = date("Y-m-d");
 
-$msisdn = isset($_REQUEST['msisdn']) ? $_REQUEST['msisdn'] : '';
-$keyword = isset($_REQUEST['keyword']) ? urldecode($_REQUEST['keyword']) : '';
-$suffix = substr($keyword, -3);
+$msisdn = isset($_REQUEST['msisdn']) ? urldecode(trim($_REQUEST['msisdn'])) : '';
+$keyword = isset($_REQUEST['keyword']) ? urldecode(trim($_REQUEST['keyword'])) : '';
+$telcoID = isset($_REQUEST['telcoid']) ? intval($_REQUEST['telcoid']) : 0;
+$text = isset($_REQUEST['text']) ? urldecode(trim($_REQUEST['text'])) : '';
 
-// Log the received data
 $logFilePath = "log/Subscriber_HIT_" . $today . ".txt";
 $ftp222 = fopen($logFilePath, 'a+');
-fwrite($ftp222, "msisdn=" . $msisdn . "&keyword=" . $keyword . "-date-" . $datenn . "\n");
+fwrite($ftp222, "msisdn=" . $msisdn . "&keyword=" . $keyword . "&telcoID=" . $telcoID . "&text=" . $text . "-date-" . $datenn . "\n");
 fclose($ftp222);
 
-echo "Received data: MSISDN=$msisdn, Keyword=$keyword\n";
+//echo "Received data: MSISDN=$msisdn, Keyword=$keyword, TelcoID=$telcoID, Text=$text\n";
 
-if ($msisdn != '' && $keyword != '') {
-    $check_stmt = $conn->prepare("SELECT id, keyword FROM subscribers WHERE number = ?");
-    $check_stmt->bind_param("s", $msisdn);
-    $check_stmt->execute();
-    $check_stmt->bind_result($id, $existing_keyword);
+$msisdn = str_replace("-", "", $msisdn);
+$sms_slice = explode(" ", $text);
+$first_prefix = isset($sms_slice[0]) ? $sms_slice[0] : '';
+$status = ($first_prefix === 'STOP') ? 0 : 1;
 
-    $update_id = null;
+// Direct SQL query to check if subscriber exists
+$sql = "SELECT id FROM subscribers WHERE number = '$msisdn' AND keyword = '$keyword'";
+$result = $conn->query($sql);
 
-    while ($check_stmt->fetch()) {
-        if (substr($existing_keyword, -3) == $suffix) {
-            $update_id = $id;
-            break;
-        }
-    }
-    $check_stmt->close();
+// Count the number of rows
+$num_rows = $result->num_rows;
 
-    $status = (strpos($keyword, 'STOP') === 0) ? 0 : 1;
+echo $num_rows;
 
-    if ($update_id) {
-        // Update the existing record
-        $update_stmt = $conn->prepare("UPDATE subscribers SET keyword = ?, status = ?, updated_at = NOW(), telcoID = 3 WHERE id = ?");
-        $update_stmt->bind_param("sii", $keyword, $status, $update_id);
+// Log the SQL query and results
+$logFilePath = "log/GP_URL_Subscriber_HIT_" . $today . ".txt";
+$ftp222 = fopen($logFilePath, 'a+');
+fwrite($ftp222, "SQL=" . $sql . " | num_rows=" . $num_rows . " -date-" . $datenn . "\n");
+fclose($ftp222);
 
-        if ($update_stmt->execute()) {
-            echo "Status and keyword updated to $keyword for MSISDN: $msisdn\n";
-        } else {
-            echo "Error updating status and keyword to $keyword: " . $update_stmt->error . "\n";
-        }
+if ($num_rows > 0) {
+    $sql_update = "UPDATE subscribers SET status = $status, updated_at = NOW() WHERE number = '$msisdn' AND keyword = '$keyword'";
 
-        $update_stmt->close();
+    // Execute the query and check for success
+    if ($conn->query($sql_update) === TRUE) {
+        echo "Status and keyword updated to $keyword for MSISDN: $msisdn and Status: $status\n";
     } else {
-        // Insert a new record
-        $insert_stmt = $conn->prepare("INSERT INTO subscribers (number, keyword, status, created_at, updated_at, telcoID) VALUES (?, ?, ?, NOW(), NOW(), 3)");
-        $insert_stmt->bind_param("ssi", $msisdn, $keyword, $status);
-
-        if ($insert_stmt->execute()) {
-            echo "Data inserted successfully for MSISDN: $msisdn with keyword: $keyword\n";
-        } else {
-            echo "Error inserting data: " . $insert_stmt->error . "\n";
-        }
-
-        $insert_stmt->close();
+        echo "Error updating status and keyword: " . $conn->error . "\n";
     }
+
+    // Log the SQL update query
+    $logFilePath = "log/GP_URL_Subscriber_HIT_" . $today . ".txt";
+    $ftp222 = fopen($logFilePath, 'a+');
+    fwrite($ftp222, "SQL_Update=" . $sql_update . " -date-" . $datenn . "\n");
+    fclose($ftp222);
 } else {
-    echo "Invalid data: MSISDN=$msisdn, Keyword=$keyword\n";
+    $sql_insert = "INSERT INTO subscribers (number, keyword, status, created_at, updated_at, telcoID) 
+               VALUES ('$msisdn', '$keyword', $status, NOW(), NOW(), $telcoID)";
+
+    // Execute the query and check for success
+    if ($conn->query($sql_insert) === TRUE) {
+        echo "Data inserted successfully for MSISDN: $msisdn with keyword: $keyword\n";
+    } else {
+        echo "Error inserting data: " . $conn->error . "\n";
+    }
+
+    // Log the SQL insert query
+    $logFilePath = "log/GP_URL_Subscriber_HIT_" . $today . ".txt";
+    $ftp222 = fopen($logFilePath, 'a+');
+    fwrite($ftp222, "SQL_Insert=" . $sql_insert . " -date-" . $datenn . "\n");
+    fclose($ftp222);
 }
 
 $conn->close();
